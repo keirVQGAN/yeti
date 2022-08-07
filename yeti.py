@@ -59,6 +59,14 @@ def conSettings(localPath , drivePath , gpu) :
     txtC ( 'Drive Path' , drivePath )
     txtY ( '>> CUDA GPU ' , gpu [ 1 ] )
 
+    
+# ----------------------------------------------------------------------------
+def slug(s) :
+    valid_chars = "-_. %s%s" % (string.ascii_letters, string.digits)
+    file = ''.join(c for c in s if c in valid_chars)
+    file = file.replace(' ','_')
+    return file
+
 
 # -----------------------------------------------------------------------------    
 def csv2ls(csv_file) :
