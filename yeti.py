@@ -13,6 +13,16 @@ from rich.console import Console
 
 console = Console ( )
 
+# -----------------------------------------------------------------------------
+def overWrite(FILE,LINE,REPLACEN):
+    # -----------------------------------------------------------------------------
+    with open(FILE, 'r', encoding='utf-8') as file:
+        data = file.readlines()
+
+    data[LINE-1] = REPLACEN
+
+    with open(FILE, 'w', encoding='utf-8') as file:
+        file.writelines(data)
 
 # --------------------------------------------------------------------FUNCTIONS
 # CONSOLE
