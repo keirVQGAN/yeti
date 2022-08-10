@@ -14,8 +14,9 @@ from rich.console import Console
 console = Console ( )
 
 # -----------------------------------------------------------------------------
-def overWrite(FILE,LINE,REPLACEN):
-    # -----------------------------------------------------------------------------
+def overWrite(FILE,LINE,REPLACE):
+    # -------------------------------------------------------------------------
+    REPLACEN=f'{REPLACE}\n'
     with open(FILE, 'r', encoding='utf-8') as file:
         data = file.readlines()
 
