@@ -14,7 +14,7 @@ from rich.console import Console
 console = Console ( )
 
 # -----------------------------------------------------------------------------
-def kenConf(WIDTH, SHIFT, ZOOM, FPS):
+def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH):
   # -----------------------------------------------------------------------------
   LINES=[70,71,85,86,91,97]
   REPLACES=[f'	intWidth = min(int({WIDTH} * fltRatio), {WIDTH})',
@@ -26,7 +26,7 @@ def kenConf(WIDTH, SHIFT, ZOOM, FPS):
 
   for LINE,REPLACE in zip(LINES,REPLACES):
     FILE='/content/3d-ken-burns/autozoom.py'
-    yeti.overWrite(FILE,LINE,REPLACE)
+    overWrite(FILE,LINE,REPLACE)
     
 # -----------------------------------------------------------------------------
 def overWrite(FILE,LINE,REPLACE):
