@@ -17,8 +17,10 @@ console = Console ( )
 # --------------------------------------------------------------------FUNCTIONS
 # Ken
 # -----------------------------------------------------------------------------
-def ken(kenPathOut, kenPathIn, WIDTH, FPS, SHIFT,ZOOM, SECONDS, ZOOMmain):
+def ken(inPath, outPath, WIDTH, FPS, SHIFT,ZOOM, SECONDS, ZOOMmain):
     # -------------------------------------------------------------------------
+    kenPathIn = f'{inPath}/ken'
+    kenPathOut = f'{outPath}/ken'
     kenInImages=glob.glob(f'{kenPathIn}/*')
     kenOutVideo=[]
     for image in kenInImages:
