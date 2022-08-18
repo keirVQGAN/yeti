@@ -14,14 +14,14 @@ from rich.console import Console
 console = Console ( )
 
 # -----------------------------------------------------------------------------
-def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH):
+def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH, ZOOMmain):
   # -----------------------------------------------------------------------------
   LINES=[70,71,85,86,91,97]
   REPLACES=[f'	intWidth = min(int({WIDTH} * fltRatio), {WIDTH})',
   f'	intHeight = min(int({WIDTH} / fltRatio), {WIDTH})',
   f"		'fltShift': {SHIFT},",
   f"		'fltZoom': {ZOOM},",
-  f"		'fltSteps': numpy.linspace(0.0, 1.0, {LENGTH}).tolist(),",
+  f"		'fltSteps': numpy.linspace(0.0, {ZOOMmain}, {LENGTH}).tolist(),",
   f"	moviepy.editor.ImageSequenceClip(sequence=[ npyFrame[:, :, ::-1] for npyFrame in npyResult + list(reversed(npyResult))[1:] ], fps={FPS}).write_videofile(arguments_strOut)"]
 
   for LINE,REPLACE in zip(LINES,REPLACES):
