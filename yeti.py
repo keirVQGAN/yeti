@@ -23,7 +23,7 @@ def ken(kenPathOut, kenPathIn, WIDTH, FPS, SHIFT,ZOOM, SECONDS, ZOOMmain):
     kenOutVideo=[]
     for image in kenInImages:
       imageBase=Path(image).stem
-      yeti.mk(f'{kenPathOut}/{imageBase}/{WIDTH}/{FPS}fps')
+      mk(f'{kenPathOut}/{imageBase}/{WIDTH}/{FPS}fps')
       imageName=f'{kenPathOut}/{imageBase}/{WIDTH}/{FPS}fps/{imageBase}_s{SHIFT}_z{ZOOM}-zm{ZOOMmain}-{SECONDS}s.mp4'
       kenOutVideo.append(imageName)
     return kenOutVideo, kenInImages
