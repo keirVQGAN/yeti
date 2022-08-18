@@ -40,7 +40,7 @@ def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH, ZOOMmain):
   f"		'fltShift': {SHIFT},",
   f"		'fltZoom': {ZOOM},",
   f"		'fltSteps': numpy.linspace(0.0, {ZOOMmain}, {LENGTH}).tolist(),",
-  f"	moviepy.editor.ImageSequenceClip(sequence=[ npyFrame[:, :, ::-1] for npyFrame in npyResult ], fps={FPS}).write_videofile(arguments_strOut)"]
+  f"	moviepy.editor.ImageSequenceClip(sequence=[ npyFrame[:, :, ::-1] for npyFrame in npyResult [1:] ], fps={FPS}).write_videofile(arguments_strOut)"]
 
   for LINE,REPLACE in zip(LINES,REPLACES):
     FILE='/content/3d-ken-burns/autozoom.py'
