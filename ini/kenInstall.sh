@@ -6,6 +6,7 @@ wget -O ./3d-ken-burns/models/disparity-refinement.pytorch http://content.snikla
 wget -O ./3d-ken-burns/models/pointcloud-inpainting.pytorch http://content.sniklaus.com/kenburns/network-inpainting.pytorch
 pip install chainer
 pip install gevent
+pip install moviepy
 pip3 install imageio==2.4.1
 cd /content/3d-ken-burns
 rm images/README.md
