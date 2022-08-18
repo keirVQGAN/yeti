@@ -16,15 +16,16 @@ console = Console ( )
 # --------------------------------------------------------------------FUNCTIONS
 # Ken
 # -----------------------------------------------------------------------------
-def ken(kenOut,kenInImages,WIDTH,FPS,SHIFT,ZOOM,SECONDS,ZOOMmain):
-   # --------------------------------------------------------------------------
+def ken(kenPathOut, kenPathIn, WIDTH, FPS, SHIFT,ZOOM, SECONDS, ZOOMmain):
+    # -------------------------------------------------------------------------
+    kenInImages=glob.glob(f'{kenPathIn}/*')
     kenOutVideo=[]
     for image in kenInImages:
       imageBase=Path(image).stem
-      yeti.mk(f'{kenOut}/{imageBase}/{WIDTH}/{FPS}fps')
-      imageName=f'{kenOut}/{imageBase}/{WIDTH}/{FPS}fps/{imageBase}_s{SHIFT}_z{ZOOM}-zm{ZOOMmain}-{SECONDS}s.mp4'
-      kenOutList.append(imageName)
-    return kenOutVideo
+      yeti.mk(f'{kenPathOut}/{imageBase}/{WIDTH}/{FPS}fps')
+      imageName=f'{kenPathOut}/{imageBase}/{WIDTH}/{FPS}fps/{imageBase}_s{SHIFT}_z{ZOOM}-zm{ZOOMmain}-{SECONDS}s.mp4'
+      kenOutVideo.append(imageName)
+    return kenOutVideo, kenInImages
 
   
 # -----------------------------------------------------------------------------
