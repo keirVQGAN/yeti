@@ -13,9 +13,23 @@ from rich.console import Console
 
 console = Console ( )
 
+# --------------------------------------------------------------------FUNCTIONS
+# Ken
+# -----------------------------------------------------------------------------
+def ken(kenOut,kenInImages,WIDTH,FPS,SHIFT,ZOOM,SECONDS,ZOOMmain):
+   # --------------------------------------------------------------------------
+    kenOutVideo=[]
+    for image in kenInImages:
+      imageBase=Path(image).stem
+      yeti.mk(f'{kenOut}/{imageBase}/{WIDTH}/{FPS}fps')
+      imageName=f'{kenOut}/{imageBase}/{WIDTH}/{FPS}fps/{imageBase}_s{SHIFT}_z{ZOOM}-zm{ZOOMmain}-{SECONDS}s.mp4'
+      kenOutList.append(imageName)
+    return kenOutVideo
+
+  
 # -----------------------------------------------------------------------------
 def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH, ZOOMmain):
-  # -----------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------
   LINES=[70,71,85,86,91,97]
   REPLACES=[f'	intWidth = min(int({WIDTH} * fltRatio), {WIDTH})',
   f'	intHeight = min(int({WIDTH} / fltRatio), {WIDTH})',
@@ -27,6 +41,7 @@ def kenConf(WIDTH, SHIFT, ZOOM, FPS, LENGTH, ZOOMmain):
   for LINE,REPLACE in zip(LINES,REPLACES):
     FILE='/content/3d-ken-burns/autozoom.py'
     overWrite(FILE,LINE,REPLACE)
+    
     
 # -----------------------------------------------------------------------------
 def overWrite(FILE,LINE,REPLACE):
@@ -40,6 +55,7 @@ def overWrite(FILE,LINE,REPLACE):
     with open(FILE, 'w', encoding='utf-8') as file:
         file.writelines(data)
 
+        
 # --------------------------------------------------------------------FUNCTIONS
 # CONSOLE
 # -----------------------------------------------------------------------------
