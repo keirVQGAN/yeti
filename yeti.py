@@ -65,37 +65,37 @@ def overWrite(FILE,LINE,REPLACE):
 # -----------------------------------------------------------------------------
 def txtH(heading) :
     # -------------------------------------------------------------------------
-    console.print ( f"<<[bright_white] {heading} [/bright_white]>>" )
+    console.print ( f"<< [bright_white] {heading} [/bright_white] >>" )
 
 
 # -----------------------------------------------------------------------------
 def txtB(action) :
     # -------------------------------------------------------------------------
-    console.print ( f"[r black]>>{action}[/r black]" )
+    console.print ( f"[r black]>> {action}[/r black]" )
 
 
 # -----------------------------------------------------------------------------
 def txtW(action , details) :
     # -------------------------------------------------------------------------
-    console.print ( f">>[bright_white]{action}[/bright_white]" )
+    console.print ( f">> [bright_white]{action}[/bright_white]" )
 
 
 # -----------------------------------------------------------------------------
 def txtC(action , details) :
     # -------------------------------------------------------------------------
-    console.print ( f">>[bright_cyan]{action}[/bright_cyan] | [r black]{details}[/r black]" )
+    console.print ( f">> [bright_cyan]{action}[/bright_cyan] | [r black]{details}[/r black]" )
 
 
 # -----------------------------------------------------------------------------
 def txtM(action , details) :
     # -------------------------------------------------------------------------
-    console.print ( f">>[bright_magenta]{action}[/bright_magenta] | [r black]{details}[/r black]" )
+    console.print ( f">> [bright_magenta]{action}[/bright_magenta] | [r black]{details}[/r black]" )
 
 
 # -----------------------------------------------------------------------------
 def txtY(action , details) :
     # -------------------------------------------------------------------------
-    console.print ( f">>[bright_yellow]{action}[/bright_yellow] | [r black]{details}[/r black]" )
+    console.print ( f">> [bright_yellow]{action}[/bright_yellow] | [r black]{details}[/r black]" )
 
 
 # -----------------------------------------------------------------------------
