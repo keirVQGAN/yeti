@@ -1,3 +1,5 @@
+#Yeti | Oct 22
+#Installs pytti5 and required libraries
 cd /content                    
 pip install -r /content/yeti/requirements_txt2img.txt                        
 apt -qq install imagemagic       
