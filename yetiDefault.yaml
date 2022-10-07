@@ -1,0 +1,123 @@
+###########################################################
+#AiDa.txt2img config.default | @yeti22
+
+#__________________________________________________________
+#HEADER (Required)
+defaults:
+  - _self_
+  - conf: ???
+  
+#----------------------------------------------------------
+#                                                    CUSTOM
+#----------------------------------------------------------
+#OUTPUT
+width: 200
+steps_per_scene: 1000
+save_every: 100
+pixel_size: 1
+gradient_accumulation_steps: 2
+
+
+#----------------------------------------------------------
+#PROMPT
+scene_prefix: 'An ultra-high resolution photograph of '
+scenes: ''
+scene_suffix: ''
+
+
+#----------------------------------------------------------
+#IMAGE
+init_image: ''
+direct_image_prompts: ''
+direct_init_weight: ''
+semantic_init_weight: ''
+
+
+#----------------------------------------------------------
+#LEARNING
+learning_rate: null
+height: -1
+cutouts: 230
+cut_pow: 2.5
+cutout_border: 0.25
+image_model: VQGAN
+vqgan_model: imagenet
+
+
+#----------------------------------------------------------
+#                                                  DEFAULTS
+#----------------------------------------------------------
+target_palette: ''
+smoothing_weight: 0.0
+seed: ${now:%f}
+interpolation_steps: 200
+steps_per_frame: 200
+display_every: 0
+clear_every: 2499
+display_scale: 1
+#----------------------------------------------------------
+#Animation
+animation_mode: off
+video_path: ''
+frames_per_second: 12
+field_of_view: 60
+near_plane: 1
+far_plane: 10000
+pre_animation_steps: 100
+lock_camera: true
+translate_x: '0'
+translate_y: '0'
+translate_z_3d: '0'
+rotate_3d: '[1, 0, 0, 0]'
+rotate_2d: '0'
+zoom_x_2d: '0'
+zoom_y_2d: '0'
+#----------------------------------------------------------
+#FFMPEG
+direct_stabilization_weight: ''
+semantic_stabilization_weight: ''
+depth_stabilization_weight: ''
+edge_stabilization_weight: ''
+flow_stabilization_weight: ''
+#----------------------------------------------------------
+#PALLETE
+random_initial_palette: true
+palette_size: 6
+palettes: 9
+gamma: 1
+hdr_weight: 0.01
+palette_normalization_weight: 0.2
+show_palette: false
+lock_palette: false
+#----------------------------------------------------------
+#MODELS
+models_parent_dir: '${user_cache:}'
+ViTB32: true
+ViTB16: false
+ViTL14: false
+ViTL14_336px: false
+RN50: false
+RN101: false
+RN50x4: false
+RN50x16: false
+RN50x64: false
+##Audio
+input_audio: ''
+input_audio_offset:
+input_audio_filters:
+border_mode: clamp
+#sampling_mode: nearest,bilinear,bicubic
+sampling_mode: bicubic
+#infill_mode:mirror,wrap,black,smear
+infill_mode: wrap
+###Output
+backups: 1
+file_namespace: test
+allow_overwrite: false
+show_graphs: false
+approximate_vram_usage: false
+use_tensorboard: false
+frame_stride: 1
+reencode_each_frame: true
+flow_long_term_samples: 1
+reset_lr_each_frame: true
