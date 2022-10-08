@@ -211,8 +211,12 @@ def thresh(imagePath , outPath) :
     for thresh in range ( 20 , 221 , 10 ) :
         img = cv2.imread ( imagePath )
         ret , img_binary = cv2.threshold ( img , thresh , 255 , cv2.THRESH_BINARY )
-        imageio.imwrite ( f'{outPath}/{imageName}/{thresh}_mask.jpg' , img_binary )
-        threshMasked.append ( f'{outPath}/{imageName}/{thresh}_mask.jpg' )
+        yeti.mk(f'{outPath}/{imageName}')
+        outMask=f'/content/{thresh}_mask.jpg'
+        imageio.imwrite ( outMask , img_binary )
+        threshMasked.append ( outMask )
+    yeti.txtC('Threshold Masks Made for', init_image)
+    return threshMasked, imageName
 
 def yml(QUALITY, csv_file, confPath, init_image):
     # --------------------------------------------------------------------------
