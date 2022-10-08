@@ -258,7 +258,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
 
     # --------------------------------------------------------------------------
     # MAKE yaml from csv
-    files = glob.glob(confPath)
+    files = glob.glob(f'{confPath}/')
     for f in files:
         os.remove(f)
         
