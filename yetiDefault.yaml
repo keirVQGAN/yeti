@@ -113,7 +113,7 @@ infill_mode: wrap
 ###Output
 backups: 1
 file_namespace: test
-allow_overwrite: false
+allow_overwrite: true
 show_graphs: false
 approximate_vram_usage: false
 use_tensorboard: false
