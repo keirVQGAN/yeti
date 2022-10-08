@@ -214,7 +214,7 @@ def outSync(localPath,outPath,timeNow):
     driveConfig=f'{drive}/config'
     
     LOCAL=[localImages,localMasks,localConfig]
-    DRIVE=[driveMasks,driveImages,driveConfig]
+    DRIVE=[driveImages,driveMasks,driveConfig]
     
     for d,l in zip(DRIVE,LOCAL):
         mk(d)
