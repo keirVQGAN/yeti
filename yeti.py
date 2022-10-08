@@ -203,9 +203,8 @@ def fps(video_file) :
     return frame_count
 
 # --------------------------------------------------------------------------
-def outSync(localPath,outPath):
+def outSync(localPath,outPath,timeNow):
     # -----------------------------------------------------------------------
-    timeNow=time.strftime("%H-%M")
     outImages=f'{localPath}/images_out'
     outImagesDrive=f'{outPath}/txt2img/{timeNow}'
     mk(outImagesDrive)
