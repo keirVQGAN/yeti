@@ -214,7 +214,7 @@ def thresh(imagePath , outPath) :
         imageio.imwrite ( f'{outPath}/{imageName}/{thresh}_mask.jpg' , img_binary )
         threshMasked.append ( f'{outPath}/{imageName}/{thresh}_mask.jpg' )
 
-def yml(QUALITY, csv_file):
+def yml(QUALITY, csv_file, confPath):
     # --------------------------------------------------------------------------
     # QUALITY SETTINGS
     if QUALITY == 'test':
