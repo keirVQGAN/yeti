@@ -213,6 +213,62 @@ def thresh(imagePath , outPath) :
         imageio.imwrite ( f'{outPath}/{imageName}/{thresh}_mask.jpg' , img_binary )
         threshMasked.append ( f'{outPath}/{imageName}/{thresh}_mask.jpg' )
 
+def yml(quality):
+    # --------------------------------------------------------------------------
+    # QUALITY SETTINGS
+    if QUALITY == 'test':
+      _width = 200
+      _cut_outs = 64
+      _cut_pow = 2.2
+      _pixel_size = 2
+      _direct_init_weight = 0.75
+      _gradient_accumulation_steps = 1
+      _steps_per_scene = 50
+      _save_every = 25
+      _display_every = 10
+      _clear_every = 100
+      _display_scale = 0.5
+
+    if QUALITY == 'draft':
+      _width = 300
+      _cut_outs = 128
+      _cut_pow = 2.8
+      _pixel_size = 2
+      _direct_init_weight = 0.75
+      _gradient_accumulation_steps = 1
+      _steps_per_scene = 100
+      _save_every = 50
+      _display_every = 10
+      _clear_every = 20
+      _display_scale = 1
+
+    if QUALITY == 'proof':
+      _width = 100
+      _cut_outs = 10
+      _cut_pow = 2.2
+      _pixel_size = 2
+      _direct_init_weight = 0.75
+      _gradient_accumulation_steps = 2
+      _steps_per_scene = 2000
+      _save_every = 200
+      _display_every = 10
+      _clear_every = 40
+      _display_scale = 4
+
+    # --------------------------------------------------------------------------
+    # MAKE yaml from csv
+    df = pd.read_csv(csv_file)
+    col_names = list(df.columns.values)
+    for col in col_names:
+        globals()[col] = []
+        for value in df[col]:
+            globals()[col].append(value)            
+    for names, preffixs, scenes, suffixs, styles in zip(name, preffix, scene, suffix, style):
+        yaml = f'{confPath}/{names}.yaml'
+        yaml_settings = f"""# @package _global_\nfile_namespace: {names}-{QUALITY}\nscene_prefix: {preffixs} \nscenes: {scenes}\nwidth: {_width}\ncutouts: {_cut_outs}\ncut_pow: {_cut_pow}\npixel_size: {_pixel_size}\ndirect_init_weight: {_direct_init_weight}\ngradient_accumulation_steps: {_gradient_accumulation_steps}\nsteps_per_scene: {_steps_per_scene}\nsave_every: {_save_every}\ndisplay_every: {_display_every}\nclear_every: {_clear_every}\nscene_suffix: {suffixs}\ndisplay_scale: {_display_scale}\ninit_image: {init_image}"""
+
+        f = open(yaml, 'w')
+        f.write(yaml_settings)
 # --------------------------------------------------------------------------
 ############################################################################
 # END OF SCRIPT##############################################################
