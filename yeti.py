@@ -108,7 +108,7 @@ def conSettings(localPath , drivePath , gpu) :
 
     
 # -----------------------------------------------------------------------------
-def list(path):
+def listPath(path):
     # -----------------------------------------------------------------------------
     pathList=glob.glob(f'{path}/*')
     return pathList
