@@ -107,6 +107,14 @@ def conSettings(localPath , drivePath , gpu) :
     txtY ( '>> CUDA GPU ' , gpu [ 1 ] )
 
     
+# -----------------------------------------------------------------------------
+def list(path):
+    # -----------------------------------------------------------------------------
+    pathList=glob.glob(f'{path}/*')
+    return pathList
+    
+
+
 # ----------------------------------------------------------------------------
 def slug(s) :
     valid_chars = "-_. %s%s" % (string.ascii_letters, string.digits)
