@@ -208,7 +208,7 @@ def outSync(localPath,outPath,timeNow):
     localImages=f'{localPath}/images_out'
     localMasks=f'{localPath}/masks'
     localConfig=f'{localPath}/config'
-    drive=f'{outPath}/txt2img/{timeNow}/images'
+    drive=f'{outPath}/txt2img/{timeNow}'
     driveMasks=f'{drive}/masks'
     driveImages=f'{drive}/images'
     driveConfig=f'{drive}/config'
