@@ -211,8 +211,9 @@ def thresh(imagePath , outPath) :
     for thresh in range ( 20 , 221 , 10 ) :
         img = cv2.imread ( imagePath )
         ret , img_binary = cv2.threshold ( img , thresh , 255 , cv2.THRESH_BINARY )
-        mk(f'{outPath}/{imageName}')
-        outMask=f'/content/{thresh}_mask.jpg'
+        OUT=f'{outPath}/masks/{imageName}/mask'
+        mk(OUT)
+        outMask=f'{OUT}/{thresh}_mask.jpg'
         imageio.imwrite ( outMask , img_binary )
         threshMasked.append ( outMask )
     txtC('Threshold Masks Made for', imagePath)
