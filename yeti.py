@@ -249,7 +249,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
       _steps_per_scene = 50
       _save_every = 25
       _display_every = 10
-      _clear_every = 20
+      _clear_every = 10
       _display_scale = 0.5
 
     if QUALITY == 'draft':
