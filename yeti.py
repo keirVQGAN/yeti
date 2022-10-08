@@ -288,7 +288,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
 
     # --------------------------------------------------------------------------
     # MAKE yaml from csv
-    shutil.rmtree(confPath)
+#     shutil.rmtree(confPath)
     mk(confPath)
     df = pd.read_csv(csv_file)
     col_names = list(df.columns.values)
