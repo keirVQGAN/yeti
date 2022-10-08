@@ -249,16 +249,16 @@ def yml(QUALITY, csv_file, confPath, init_image):
     # QUALITY SETTINGS
     if QUALITY == 'test':
       _width = 300
-      _cut_outs = 64
+      _cut_outs = 100
       _cut_pow = 2.4
       _pixel_size = 2
       _direct_init_weight = 0.75
       _gradient_accumulation_steps = 2
-      _steps_per_scene = 5000
-      _save_every = 5000
-      _display_every = 20
-      _clear_every = 150
-      _display_scale = 1
+      _steps_per_scene = 500
+      _save_every = 100
+      _display_every = 10
+      _clear_every = 20
+      _display_scale = 0.75
 
     if QUALITY == 'draft':
       _width = 300
