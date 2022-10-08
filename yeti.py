@@ -205,12 +205,20 @@ def fps(video_file) :
 # --------------------------------------------------------------------------
 def outSync(localPath,outPath,timeNow):
     # -----------------------------------------------------------------------
-    outImages=f'{localPath}/images_out'
-    maskOut=f'{localPath}/masks'
-    outImagesDrive=f'{outPath}/txt2img/{timeNow}'
-    mk(outImagesDrive)
-    sync(outImages,f'{outImagesDrive}/images,'sync')
-    sync(maskOut,f'{outImagesDrive}/masks,'sync')
+    localImages=f'{localPath}/images_out'
+    localMasks=f'{localPath}/masks'
+    localConfig=f'{localPath}/config'
+    drive=f'{outPath}/txt2img/{timeNow}/images'
+    driveMasks=f'{drive}/masks'
+    driveImages=f'{drive}/images'
+    driveConfig=f'{drive}/config'
+    
+    LOCAL=[localImages,localMasks,localConfig]
+    DRIVE=[driveMasks,driveImages,driveConfig]
+    
+    for d,l in zip(DRIVE,LOCAL):
+        mk(d)
+        sync(l,d,'sync')
 
 # --------------------------------------------------------------------------
 def thresh(imagePath , outPath, imageNames) :
