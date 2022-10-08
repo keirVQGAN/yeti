@@ -205,8 +205,9 @@ def fps(video_file) :
 
 # --------------------------------------------------------------------------
 # WRITE // Threshold Masks
-def thresh(imagePath , outPath, imageName) :
+def thresh(imagePath , outPath, imageNames) :
     threshMasked = [ ]
+    imageName = os.path.splitext(imageNames)[0]
     for thresh in range ( 20 , 221 , 10 ) :
         img = cv2.imread ( imagePath )
         ret , img_binary = cv2.threshold ( img , thresh , 255 , cv2.THRESH_BINARY )
