@@ -209,8 +209,8 @@ def outSync(localPath,outPath,timeNow):
     maskOut=f'{localPath}/masks'
     outImagesDrive=f'{outPath}/txt2img/{timeNow}'
     mk(outImagesDrive)
-    sync(outImages,outImagesDrive,'sync')
-    sync(maskOut,outImagesDrive,'sync')
+    sync(outImages,f'{outImagesDrive}/images,'sync')
+    sync(maskOut,f'{outImagesDrive}/masks,'sync')
 
 # --------------------------------------------------------------------------
 def thresh(imagePath , outPath, imageNames) :
