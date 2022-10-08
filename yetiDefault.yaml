@@ -93,12 +93,12 @@ lock_palette: false
 #MODELS
 models_parent_dir: '${user_cache:}'
 ViTB32: true
-ViTB16: false
+ViTB16: true
 ViTL14: false
 ViTL14_336px: false
 RN50: false
 RN101: false
-RN50x4: false
+RN50x4: true
 RN50x16: false
 RN50x64: false
 ##Audio
