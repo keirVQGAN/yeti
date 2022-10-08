@@ -203,9 +203,16 @@ def fps(video_file) :
     return frame_count
 
 
+def outSync(localPath,outPath):
+    timeNow=time.strftime("%H-%M")
+    outImages=f'{localPath}/images_out'
+    outImagesDrive=f'{outPath}/txt2img/{timeNow}'
+    yeti.mk(outImagesDrive)
+    sync(outImages,outImagesDrive,'sync')
+
 # --------------------------------------------------------------------------
-# WRITE // Threshold Masks
 def thresh(imagePath , outPath, imageNames) :
+   # -------------------------------------------------------------------------_
     threshMasked = [ ]
     imageName = os.path.splitext(imageNames)[0]
     for thresh in range ( 20 , 221 , 10 ) :
