@@ -215,7 +215,7 @@ def thresh(imagePath , outPath) :
         outMask=f'/content/{thresh}_mask.jpg'
         imageio.imwrite ( outMask , img_binary )
         threshMasked.append ( outMask )
-    txtC('Threshold Masks Made for', init_image)
+    txtC('Threshold Masks Made for', imagePath)
     return threshMasked, imageName
 
 def yml(QUALITY, csv_file, confPath, init_image):
