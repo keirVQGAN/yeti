@@ -132,9 +132,9 @@ def mk(path) :
 
         
 # -----------------------------------------------------------------------------
-def lsName(confPath=confPath):
+def lsName(path):
     # -------------------------------------------------------------------------
-    l=os.listdir(confPath)
+    l=os.listdir(path)
     li=[x.split('.')[0] for x in l]
     return li
 
