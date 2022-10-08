@@ -258,7 +258,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
       _save_every = 100
       _display_every = 10
       _clear_every = 20
-      _display_scale = 0.75
+      _display_scale = 1
 
     if QUALITY == 'draft':
       _width = 300
