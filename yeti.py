@@ -258,6 +258,9 @@ def yml(QUALITY, csv_file, confPath, init_image):
 
     # --------------------------------------------------------------------------
     # MAKE yaml from csv
+    files = glob.glob(confPath)
+    for f in files:
+    os.remove(f)
     df = pd.read_csv(csv_file)
     col_names = list(df.columns.values)
     for col in col_names:
