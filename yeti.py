@@ -209,7 +209,7 @@ def thresh(imagePath , outPath) :
     imageName = os.path.splitext ( imagePath ) [ 0 ]
     threshMasked = [ ]
     for thresh in range ( 20 , 221 , 10 ) :
-        img = cv2.imread ( image )
+        img = cv2.imread ( imagePath )
         ret , img_binary = cv2.threshold ( img , thresh , 255 , cv2.THRESH_BINARY )
         imageio.imwrite ( f'{outPath}/{imageName}/{thresh}_mask.jpg' , img_binary )
         threshMasked.append ( f'{outPath}/{imageName}/{thresh}_mask.jpg' )
