@@ -11,6 +11,7 @@ from IPython.display import clear_output
 from dirsync import sync
 from rich.console import Console
 from pathlib import Path
+import pandas as pd
 
 console = Console ( )
 
