@@ -248,7 +248,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
     # --------------------------------------------------------------------------
     # QUALITY SETTINGS
     if QUALITY == 'test':
-      _width = 200
+      _width = 300
       _cut_outs = 32
       _cut_pow = 2.4
       _pixel_size = 2
