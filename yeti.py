@@ -251,7 +251,7 @@ def yml(QUALITY, csv_file, confPath, init_image):
       _width = 200
       _cut_outs = 32
       _cut_pow = 2.4
-      _pixel_size = 1
+      _pixel_size = 2
       _direct_init_weight = 0.75
       _gradient_accumulation_steps = 1
       _steps_per_scene = 500
