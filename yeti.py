@@ -8,6 +8,7 @@ import os.path
 import shutil
 import time
 from IPython.display import clear_output
+from PIL import Image
 from dirsync import sync
 from rich.console import Console
 from pathlib import Path
@@ -302,6 +303,18 @@ def yml(QUALITY, csv_file, confPath, init_image):
 
         f = open(yaml, 'w')
         f.write(yaml_settings)
+        
+
+def grid(imgs, rows, cols):
+    assert len(imgs) == rows*cols
+
+    w, h = imgs[0].size
+    grid = Image.new('RGB', size=(cols*w, rows*h))
+    grid_w, grid_h = grid.size
+    
+    for i, img in enumerate(imgs):
+        grid.paste(img, box=(i%cols*w, i//cols*h))
+    return grid
 # --------------------------------------------------------------------------
 ############################################################################
 # END OF SCRIPT##############################################################
