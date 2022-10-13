@@ -325,7 +325,7 @@ def prompter(jsonFile):
     prompt = PromptGenerator(_prompt, data)
     text_prompt, strength, prompt_data = prompt.generate()
     clear_output()
-    return data
+    return data, text_prompt, strength, prompt_data
 # --------------------------------------------------------------------------
 ############################################################################
 # END OF SCRIPT##############################################################
