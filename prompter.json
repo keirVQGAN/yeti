@@ -1,0 +1,40 @@
+{
+   "colour": [
+      "gold",
+      "glass",
+      "broken teeth",
+      "eggs",
+      "faces of cats",
+      "tumours"
+   ],
+   "composure": [
+      "fat",
+      "skinny",
+      "lanky",
+      "fit",
+      "muscular",
+      "wide shouldered"
+   ],
+   "subject": [
+      "capybara",
+      "cat",
+      "train",
+      "giant mushrooms"
+   ],
+   "action": [
+      "walking on a tightrope",
+      "drinking a coffee",
+      "playing soccer",
+      "doing yoga",
+      "on a trapese",
+      "dressed as a clown"
+   ],
+   "timeofday": [
+      "at night",
+      "in the morning",
+      "in the afternoon",
+      "at dawn",
+      "at sunset",
+      "during a hailstorm"
+   ]
+}
