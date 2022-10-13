@@ -13,6 +13,7 @@ from dirsync import sync
 from rich.console import Console
 from pathlib import Path
 import pandas as pd
+import json
 
 console = Console ( )
 
@@ -315,6 +316,16 @@ def grid(imgs, rows, cols):
     for i, img in enumerate(imgs):
         grid.paste(img, box=(i%cols*w, i//cols*h))
     return grid
+
+def prompter(jsonFile):
+    with open(jsonFile) as jsonPrompt:
+    data = json.load(jsonPrompt)
+    from promptgen import PromptGenerator
+    _prompt = 'An award winning macro photograph of a ball made of $colour'
+    prompt = PromptGenerator(_prompt, data)
+    text_prompt, strength, prompt_data = prompt.generate()
+    clear_output()
+    return data
 # --------------------------------------------------------------------------
 ############################################################################
 # END OF SCRIPT##############################################################
