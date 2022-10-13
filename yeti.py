@@ -319,12 +319,12 @@ def grid(imgs, rows, cols):
 
 def prompter(jsonFile,_prompt):
     with open(jsonFile) as jsonPrompt:
-    data = json.load(jsonPrompt)
-    from promptgen import PromptGenerator
-    prompt = PromptGenerator(_prompt, data)
-    text_prompt, strength, prompt_data = prompt.generate()
-    clear_output()
-    return data, text_prompt, strength, prompt_data
+      data = json.load(jsonPrompt)
+      from promptgen import PromptGenerator
+      prompt = PromptGenerator(_prompt, data)
+      text_prompt, strength, prompt_data = prompt.generate()
+      clear_output()
+      return data, text_prompt, strength, prompt_data
 # --------------------------------------------------------------------------
 ############################################################################
 # END OF SCRIPT##############################################################
