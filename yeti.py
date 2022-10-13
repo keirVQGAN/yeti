@@ -317,11 +317,10 @@ def grid(imgs, rows, cols):
         grid.paste(img, box=(i%cols*w, i//cols*h))
     return grid
 
-def prompter(jsonFile):
+def prompter(jsonFile,_prompt):
     with open(jsonFile) as jsonPrompt:
     data = json.load(jsonPrompt)
     from promptgen import PromptGenerator
-    _prompt = 'An award winning macro photograph of a ball made of $colour'
     prompt = PromptGenerator(_prompt, data)
     text_prompt, strength, prompt_data = prompt.generate()
     clear_output()
