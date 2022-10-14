@@ -1,0 +1,8 @@
+{
+   "shot":["full-body shot","medium shot","long shot","full-body shot","medium shot","long shot"],
+   "drape":["wearing","enclosed","gowned","draped","consutmed","wrapped"],
+   "object":["musical instrument","fursuit","battle armour","street-wear","religious robes","communication device"],
+   "material":["cardboard","card","bone carving","paper","flowers","silks"],
+   "camera":["Polaroid 95","Pentax K1000","Leica M9","Canon 5D MK II","Panasonic Lumix DMC-G1","Hasselblad 500cm"],
+   "lighting":["studio lighting","proffesional lighting","high-key lighting","colourful lighting","high-key lighting","studio lighting"]
+}
