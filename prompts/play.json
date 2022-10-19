@@ -1,10 +1,10 @@
 {
-   "$style":["A Futuristic","A Futurist","An Indigenous","A Natural","A Carved","A Sculpted","A Brutalist","An Impossible","An adventure","An Outsider Art","A Derelict"],
-   "$subject":["Young children","Old people","Children","Cones","Pagens","Robots","Teenagers","Refugees","Monsters","Disabled Children","Whales"],
-   "$architect":["Antoni Gaudí","Frank Lloyd Wright","Mies Van der Rohe","Philip Johnson","Eero Saarinen","Richard Rogers","Frank Gehry","Norman Foster","Santiago Calatrava","Zaha Hadid","Oscar Niemeyer"],
-   "$location":["cave","city","desert","jungle","lake","mountain","rave","forest","tunnel","coral reef","wearhouse"],
-   "$camera":["Canon 1D X Mark II","Canon EOS R","Canon EOS 5D Mark IV","H6D-400c Hasselblad","Canon 1D X Mark II","Canon EOS R","Canon EOS 5D Mark IV","H6D-400c Hasselblad","Canon 1D X Mark II","Canon EOS R","Canon EOS R"],
-   "$lens":["Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 17mm f/4L"],
-   "$angle":["overhead view","low angle","aerial view","titled frame","over-the-shoulder","extreme close-up","close-up","medium shot","long shot","extreme long shot","long shot"],
-   "$lighting":["colourful lighting","police lights","fireworks","high-key lighting","proffesional lighting","neon tubes","the light of the golden hour","midday sun","overcast sky","bioluminescent fungi","natural light"]
+   "style":["a Futuristic","a Futurist","an Indigenous","a Natural","a Carved","a Sculpted","a Brutalist","an Impossible","an adventure","an Outsider art","a Derelict"],
+   "subject":["Young children","Old people","Children","Cones","Pagens","Robots","Teenagers","Refugees","Monsters","Disabled Children","Whales"],
+   "architect":["Antoni Gaudí","Frank Lloyd Wright","Mies Van der Rohe","Philip Johnson","Eero Saarinen","Richard Rogers","Frank Gehry","Norman Foster","Santiago Calatrava","Zaha Hadid","Oscar Niemeyer"],
+   "location":["cave","city","desert","jungle","lake","mountain","rave","forest","tunnel","coral reef","wearhouse"],
+   "camera":["Canon 1D X Mark II","Canon EOS R","Canon EOS 5D Mark IV","H6D-400c Hasselblad","Canon 1D X Mark II","Canon EOS R","Canon EOS 5D Mark IV","H6D-400c Hasselblad","Canon 1D X Mark II","Canon EOS R","Canon EOS R"],
+   "lens":["Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 24mm f/3.5L II","Canon 16-35mm f4L IS","Canon TS-E 17mm f/4L","Canon TS-E 17mm f/4L"],
+   "angle":["overhead view","low angle","aerial view","titled frame","over-the-shoulder","extreme close-up","close-up","medium shot","long shot","extreme long shot","long shot"],
+   "lighting":["colourful lighting","police lights","fireworks","high-key lighting","proffesional lighting","neon tubes","the light of the golden hour","midday sun","overcast sky","bioluminescent fungi","natural light"]
 }
