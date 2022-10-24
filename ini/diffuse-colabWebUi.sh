@@ -6,4 +6,4 @@ wget --header={user_header} https://huggingface.co/CompVis/stable-diffusion-v-1-
 COMMANDLINE_ARGS="--exit" REQS_FILE="requirements.txt" python launch.py
 cd stable-diffusion-webui
 git pull
-COMMANDLINE_ARGS="--share --gradio-debug --gradio-auth me:qwerty" REQS_FILE="requirements.txt" python launch.py
+COMMANDLINE_ARGS="--share --gradio-debug --gradio-auth yeti:yeti" REQS_FILE="requirements.txt" python launch.py
