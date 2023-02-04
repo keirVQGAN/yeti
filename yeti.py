@@ -388,9 +388,11 @@ def IMG(imagePath='/content/images',PROMPT="A snail covered in iridescent feathe
           return image_file
 
 # -----------------------------------------------------------------------------    
-def PDF(TEXT, IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
+def PDF(TEXT, IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100):
   # ---------------------------------------------------------------------------
     pdf = FPDF()
+    PDF_OUT1=IMAGE
+    PDF_OUT=Path(Image).stem
     pdf.add_page('P,A5')
     with open(TEXT, 'rb') as fh:
       txt = fh.read().decode('latin-1')
@@ -399,7 +401,7 @@ def PDF(TEXT, IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
     pdf.ln(5)
     pdf.set_font('Helvetica', '', 12)
     pdf.multi_cell(180, 6, txt, 0,'M')
-    pdf.output(PDF_OUT, 'F')
+    pdf.output(f'{PDF_OUT}.pdf', 'F')
     
     
 # ----------------------------------------------------------------------------- 
@@ -413,7 +415,6 @@ def wot(IMG):
   }
   model = replicate.models.get("rmokady/clip_prefix_caption")
   version = model.versions.get("9a34a6339872a03f45236f114321fb51fc7aa8269d38ae0ce5334969981e4cd8")
-
   output = version.predict(**inputs)
   return output
 
