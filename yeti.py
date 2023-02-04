@@ -8,12 +8,20 @@ import os.path
 import shutil
 import time
 from IPython.display import clear_output
+from IPython.display import Image, display
 from PIL import Image
 from dirsync import sync
 from rich.console import Console
 from pathlib import Path
 import pandas as pd
 import json
+from base64 import b64decode
+from fpdf import FPDF
+import openai
+from jupyter_dash import JupyterDash
+from dash import dcc
+from dash import html
+from dash.dependencies import Input, Output, State
 
 console = Console ( )
 
@@ -327,6 +335,71 @@ def prompter(jsonFile,_prompt):
       return data, text_prompt, strength, prompt_data
 # --------------------------------------------------------------------------
 ############################################################################
+#openAI
+# -----------------------------------------------------------------------------
+def TXT(N=1,ENGINE='text-ada-001',PROMPT='A poem about snails eating cats',TEMPREATURE=1,MAX_TOKENS=64,TOP_P=0.88,FREQUENCY_PENALTY=0, PRESENCE_PENALTY=0,STOP='""'):
+    # -------------------------------------------------------------------------
+    response = openai.Completion.create(
+    engine=ENGINE,
+    prompt=PROMPT,
+    temperature=TEMPREATURE,
+    max_tokens=MAX_TOKENS,
+    top_p=TOP_P,
+    frequency_penalty=FREQUENCY_PENALTY,
+    presence_penalty=PRESENCE_PENALTY,
+    stop=STOP,
+    n=N
+    )
+    textOut=response.choices[0].text
+    textClean1 = textOut.lstrip('\n')
+    textClean2 = textClean1.lstrip('\t')
+    textClean = textClean2.rstrip('\n')
+    # txtTXT(textOut)
+
+    file_name_txt = f'{txtPath}/{PROMPT[:10]}-{response["created"]}.txt'
+    with open(file_name_txt, 'w') as f:
+      f.write(textClean)
+
+    return file_name_txt,textClean,txtPath
+
+# -----------------------------------------------------------------------------
+def IMG(PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x256",FORMAT="b64_json"):
+  # ---------------------------------------------------------------------------
+    imageOut = openai.Image.create(
+      prompt=PROMPT,
+      n=VARIATIONS,
+      size=SIZE,
+      response_format=FORMAT
+  )
+  #Save as a JSON file
+    file_name = imagePath / f"{PROMPT[:10]}-{imageOut['created']}.json"
+    with open(file_name, mode="w", encoding="utf-8") as file:
+      json.dump(imageOut, file)
+  #Encode JSON file as an image
+    for index, image_dict in enumerate(imageOut["data"]):
+      image_data = b64decode(image_dict["b64_json"])
+      image_file = imagePath / f"{file_name.stem}-{index}.png"
+      with open(image_file, mode="wb") as png:
+          png.write(image_data)
+          display(Image(image_file))
+          return image_file
+
+# -----------------------------------------------------------------------------    
+def PDF(TEXT=TEXT, IMAGE=IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
+  # ---------------------------------------------------------------------------
+    pdf = FPDF()
+    pdf.add_page('P,A5')
+    with open(TEXT, 'rb') as fh:
+      txt = fh.read().decode('latin-1')
+    # a=IMAGE
+    pdf.image(str(IMAGE),w=TEXT_WIDTH,h=TEXT_HEIGHT)
+    pdf.ln(5)
+    pdf.set_font('Helvetica', '', 12)
+    pdf.multi_cell(180, 6, txt, 0,'M')
+    pdf.output(PDF_OUT, 'F')
+
+
+
 # END OF SCRIPT##############################################################
 ############################################################################
 ####################################################################yeti2022
