@@ -364,7 +364,7 @@ def TXT(txtPath='/content/texts',N=1,ENGINE='text-ada-001',PROMPT='A poem about 
     return file_name_txt
 
 # -----------------------------------------------------------------------------
-def IMG(PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x256",FORMAT="b64_json"):
+def IMG(imagePath='/content/images',PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x256",FORMAT="b64_json"):
   # ---------------------------------------------------------------------------
     imageOut = openai.Image.create(
       prompt=PROMPT,
@@ -373,16 +373,17 @@ def IMG(PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x2
       response_format=FORMAT
   )
   #Save as a JSON file
-    file_name = imagePath / f"{PROMPT[:10]}-{imageOut['created']}.json"
+    file_name = f"{imagePath}/{PROMPT[:10]}-{imageOut['created']}.json"
     with open(file_name, mode="w", encoding="utf-8") as file:
       json.dump(imageOut, file)
   #Encode JSON file as an image
     for index, image_dict in enumerate(imageOut["data"]):
       image_data = b64decode(image_dict["b64_json"])
-      image_file = imagePath / f"{file_name.stem}-{index}.png"
+      file_name=Path(file_name).stem
+      image_file = f"{imagePath}/{file_name}-{index}.png"
       with open(image_file, mode="wb") as png:
           png.write(image_data)
-          display(Image(image_file))
+          # display(Image(image_file))
           return image_file
 
 # -----------------------------------------------------------------------------    
