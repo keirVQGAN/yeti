@@ -337,8 +337,8 @@ def prompter(jsonFile,_prompt):
 ############################################################################
 #openAI
 # -----------------------------------------------------------------------------
-def TXT(N=1,ENGINE='text-ada-001',PROMPT='A poem about snails eating cats',TEMPREATURE=1,MAX_TOKENS=64,TOP_P=0.88,FREQUENCY_PENALTY=0, PRESENCE_PENALTY=0,STOP='""'):
-    # -------------------------------------------------------------------------
+def TXT(txtPath='/content/texts',N=1,ENGINE='text-ada-001',PROMPT='A poem about snails eating cats',TEMPREATURE=1,MAX_TOKENS=64,TOP_P=0.88,FREQUENCY_PENALTY=0, PRESENCE_PENALTY=0,STOP='""'):
+    # -----------------------------------------------------------------------------
     response = openai.Completion.create(
     engine=ENGINE,
     prompt=PROMPT,
@@ -360,7 +360,8 @@ def TXT(N=1,ENGINE='text-ada-001',PROMPT='A poem about snails eating cats',TEMPR
     with open(file_name_txt, 'w') as f:
       f.write(textClean)
 
-    return file_name_txt,textClean,txtPath
+
+    return file_name_txt
 
 # -----------------------------------------------------------------------------
 def IMG(PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x256",FORMAT="b64_json"):
@@ -385,7 +386,7 @@ def IMG(PROMPT="A snail covered in iridescent feathers",VARIATIONS=1,SIZE="256x2
           return image_file
 
 # -----------------------------------------------------------------------------    
-def PDF(TEXT=TEXT, IMAGE=IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
+def PDF(TEXT, IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
   # ---------------------------------------------------------------------------
     pdf = FPDF()
     pdf.add_page('P,A5')
