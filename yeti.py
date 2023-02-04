@@ -22,6 +22,7 @@ from jupyter_dash import JupyterDash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
+import replicate
 
 console = Console ( )
 
@@ -399,7 +400,20 @@ def PDF(TEXT, IMAGE, TEXT_WIDTH=100, TEXT_HEIGHT=100, PDF_OUT='untitled.pdf'):
     pdf.set_font('Helvetica', '', 12)
     pdf.multi_cell(180, 6, txt, 0,'M')
     pdf.output(PDF_OUT, 'F')
+    
+    
+# ----------------------------------------------------------------------------- 
+def wot(IMG):
+  # -------------------------------------------------------------------------    
+  inputs = {
+      # Input image
+      'image': open(IMG, "rb"),
+      'model': "coco",
+      'use_beam_search': False,
+  }
 
+  output = version.predict(**inputs)
+  return output
 
 
 # END OF SCRIPT##############################################################
