@@ -360,7 +360,7 @@ def TXT(txtPath='/content/texts',N=1,ENGINE='text-ada-001',PROMPT='A poem about 
     with open(file_name_txt, 'w') as f:
       f.write(textClean)
 
-
+    
     return file_name_txt
 
 # -----------------------------------------------------------------------------
