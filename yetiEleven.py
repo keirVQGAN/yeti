@@ -17,8 +17,6 @@ import pandas as pd
 import json
 from base64 import b64decode
 
-import replicate
-
 console = Console ( )
 
 # --------------------------------------------------------------------FUNCTIONS
