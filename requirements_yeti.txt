@@ -2,5 +2,6 @@ rich[jupyter]
 dirsync
 fpdf
 openai
+jupyter-dash
 #scipy<=1.2.1
 #python-slugify
