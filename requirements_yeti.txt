@@ -3,5 +3,6 @@ dirsync
 fpdf
 openai
 jupyter-dash
+replicate
 #scipy<=1.2.1
 #python-slugify
