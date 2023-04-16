@@ -6,3 +6,5 @@ jupyter-dash
 replicate
 #scipy<=1.2.1
 #python-slugify
+dash==2.3.1
+jupyter-dash                                     
