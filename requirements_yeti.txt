@@ -9,3 +9,4 @@ replicate
 dash==2.3.1
 jupyter-dash
 langchain
+python-dotenv
