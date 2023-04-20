@@ -65,62 +65,33 @@ def get_manifesto_sample(text, sample_limit):
                 sample = ' '.join(words[:i]) + ' '
             return (sample.rstrip() + '...').rstrip()
 
-def create_manifesto(manifesto_text, keywords):
-    """
-    Generate a manifesto based on provided text and keywords using OpenAI's GPT-3 API.
+def create_manifesto(manifestos_text, keywordA, keywordB, keywordC, keywordD):
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a highly creative and skilled writer. Craft an engaging and captivating manifesto by considering different perspectives, emotions, and vivid imagery."
+        },
+        {
+            "role": "user",
+            "content": f"Create a two-paragraph manifesto based on this example: {manifestos_text}. It should focus on care, sustainability, and the significance of indigenous and more-than-human knowledge, using these <mark>keywords</mark>: {keywordA}, {keywordB}, {keywordC}. The manifesto should be poetic, accessible, and aligned with contemporary writing styles, and should not exceed 250 words. Start with a 7-word subtitle, followed by the main text. The manifesto will help the recipient reconnect with the more-than-human world through their more-than-human guide ({keywordD})."
+        }
+    ]
+    response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
+    return response.choices[0].message.content.strip()
 
-    Args:
-    - manifesto_text (str): The main text of the manifesto.
-    - keywords (list of str): A list of keywords to be incorporated into the manifesto.
-
-    Returns:
-    - A string containing the generated manifesto.
-    """
-    # Construct prompt for API request
-    prompt = f"Generate a manifesto based on the following text and keywords:\n\n{manifesto_text}\n\nKeywords: {', '.join(keywords)}\n\nManifesto:"
-    
-    # Send request to OpenAI's GPT-3 API
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        max_tokens=2048,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-
-    # Extract the generated manifesto from the API response
-    generated_manifesto = response.choices[0].text.strip()
-
-    return generated_manifesto
-
-def generate_manifesto_title(manifesto_text):
-    """
-    Generate a title for a manifesto based on the provided text using OpenAI's GPT-3 API.
-
-    Args:
-    - manifesto_text (str): The main text of the manifesto.
-
-    Returns:
-    - A string containing the generated title.
-    """
-    # Construct prompt for API request
-    prompt = f"Generate a title for a manifesto based on the following text:\n\n{manifesto_text}\n\nTitle:"
-
-    # Send request to OpenAI's GPT-3 API
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        max_tokens=60,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-
-    # Extract the generated title from the API response
-    generated_title = response.choices[0].text.strip()
-
-    return generated_title
+def generate_title(manifesto_text):
+    messages = [
+        {
+            "role": "system",
+            "content": "You are an expert at creating concise and powerful titles for written works."
+        },
+        {
+            "role": "user",
+            "content": f"Generate a title for the following manifesto using no more than three words and no non-alphabet characters. Consider the essence and emotions conveyed by the manifesto: {manifesto_text[:50]}..."
+        }
+    ]
+    response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
+    return response.choices[0].message.content.strip().replace('"', '')
 
 def select_image(image_dir, color_space):
     """
