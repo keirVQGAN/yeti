@@ -12,6 +12,60 @@ from reportlab.pdfbase.ttfonts import TTFont
 import os
 from datetime import datetime
 import openai
+import os
+import requests
+
+def image(animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=3, enhance_prompt='yes', seed=None, webhook=None, track_id=None, output_dir='/content/image'):
+    url = 'https://stablediffusionapi.com/api/v3/img2img'
+    headers = {'Content-Type': 'application/json'}
+    
+    data = {
+        "key": api_key,
+        "prompt": prompt,
+        "negative_prompt": negative_prompt,
+        "init_image": init_image,
+        "width": str(width),
+        "height": str(height),
+        "samples": str(samples),
+        "num_inference_steps": str(num_inference_steps),
+        "guidance_scale": guidance_scale,
+        "enhance_prompt": enhance_prompt,
+        "seed": seed,
+        "webhook": webhook,
+        "track_id": track_id
+    }
+    
+    if mask_image:
+        data["mask_image"] = mask_image
+    
+    if prompt_strength:
+        data["prompt_strength"] = prompt_strength
+    
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+    
+    if response.status_code == 200:
+        response_data = response.json()
+        # save response data to a unique JSON file
+        filename = f'{animal}.json'
+        filepath = os.path.join(output_dir, filename)
+        with open(filepath, 'w') as f:
+            json.dump(response_data, f)
+        
+        # download the generated images
+        image_urls = response_data['output']
+        image_paths = []
+        for url in image_urls:
+            response = requests.get(url)
+            filename = f'{animal}.jpg'
+            filepath = os.path.join(output_dir, 'images', filename)
+            with open(filepath, 'wb') as f:
+                f.write(response.content)
+            image_paths.append(filepath)
+            
+        return image_paths
+    else:
+        raise Exception(f"API call failed with status code {response.status_code}: {response.text}")
+
 
 def save_json(title, text, keywords, example_text, date_time, links):
     """Save the manifesto information to a JSON file and to an individual JSON file for each manifesto."""
