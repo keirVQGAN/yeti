@@ -211,6 +211,15 @@ def html(title, text):
     with open(f'/content/drive/MyDrive/mani/out/manifestos/{title}/{filename}', 'w') as f:
         f.write(html_content)   
 
+import random
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Image as RLImage, Paragraph, Spacer
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
 def create_pdf(title, text):
     # Randomly select an image from the specified folder
     image_folder = "/content/drive/MyDrive/mani/in/images/CMYK"
@@ -223,7 +232,7 @@ def create_pdf(title, text):
     output_file = f"{output_folder}/{title}.pdf"
 
     # Create the document with reduced top margin
-    doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.5)
+    doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.3)
 
     # Register custom fonts
     font_folder = "/content/drive/MyDrive/mani/fonts"
@@ -234,10 +243,10 @@ def create_pdf(title, text):
 
     # Prepare styles
     title_style = ParagraphStyle(
-        name="TitleStyle", fontName="Oswald-Bold", fontSize=42, alignment=1, spaceAfter=8, textTransform='uppercase', leading=48
+        name="TitleStyle", fontName="Oswald-Bold", fontSize=36, alignment=1, spaceAfter=0.5, textTransform='uppercase', leading=38
     )
     subtitle_style = ParagraphStyle(
-        name="SubtitleStyle", fontName="Inter-Medium", fontSize=14, alignment=1, spaceAfter=1
+        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=1
     )
     body_style = ParagraphStyle(
         name="BodyStyle", fontName="Inter-Light", fontSize=10, alignment=4, spaceAfter=1, leading=12
