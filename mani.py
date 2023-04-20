@@ -103,7 +103,7 @@ def get_manifesto_sample(text, sample_limit):
                 sample = ' '.join(words[:i]) + ' '
             return (sample.rstrip() + '...').rstrip()
 
-def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model=gpt-3.5-turbo):
+def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model='gpt-3.5-turbo'):
     messages = [
         {
             "role": "system",
@@ -117,7 +117,7 @@ def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model=gpt-3.
     response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip()
 
-def title(manifesto_text, model=gpt-3.5-turbo):
+def title(manifesto_text, model='gpt-3.5-turbo'):
     messages = [
         {
             "role": "system",
