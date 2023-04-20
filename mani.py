@@ -18,7 +18,7 @@ import requests
 def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=3, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
     url = 'https://stablediffusionapi.com/api/v3/img2img'
     headers = {'Content-Type': 'application/json'}
-    output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{MANI_TITLE}/{animal}.png'
+    output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{MANI_TITLE}'
     data = {
         "key": api_key,
         "prompt": prompt,
@@ -46,7 +46,7 @@ def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512
     if response.status_code == 200:
         response_data = response.json()
         # save response data to a unique JSON file
-        filename = f'{output_dir}/{animal}.json'
+        filename = f'{animal}.json'
         filepath = os.path.join(output_dir, filename)
         with open(filepath, 'w') as f:
             json.dump(response_data, f)
@@ -57,7 +57,7 @@ def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512
         for url in image_urls:
             response = requests.get(url)
             filename = f'{animal}.jpg'
-            filepath = f'{output_dir}/{filename}'
+            filepath = f'{output_dir}'
             with open(filepath, 'wb') as f:
                 f.write(response.content)
             image_paths.append(filepath)
