@@ -1,3 +1,5 @@
+import json
+
 def get_selected_manifestos_text(manifestos_limit=5, sample_limit=500):
     """Select a random sample of manifestos and return their links and sampled text."""
     # Load the manifestos data
