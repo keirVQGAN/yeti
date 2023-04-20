@@ -1,4 +1,19 @@
 import json
+import base64
+import json
+import random
+import subprocess
+from io import BytesIO
+
+import numpy as np
+from PIL import Image
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Image as RLImage, Paragraph, Spacer
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 def get_selected_manifestos_text(manifestos_limit=5, sample_limit=500):
     """Select a random sample of manifestos and return their links and sampled text."""
