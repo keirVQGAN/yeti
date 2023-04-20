@@ -282,7 +282,37 @@ def save_manifesto_to_json(title, text, keywords, example_text, date_time, outpu
     if os.path.exists(main_json_output_path):
         with open(main_json_output_path, 'r') as f:
             existing_data = json.load(f)
+            
+def manifesto(manifestos_limit, keywords, render=True):
+    # Select a random sample of manifestos and get their links and sampled text
+    links, manifestos_text = get_selected_manifestos_text(manifestos_limit=manifestos_limit)
 
+    # Generate a title for the manifesto based on the selected manifestos text
+    title = generate_manifesto_title(manifestos_text)
+
+    # Create a folder for the manifesto
+    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Generate a manifesto using GPT-3 API
+    if render:
+        text = create_manifesto(manifestos_text, keywords)
+    else:
+        text = "Sample generated text"
+    
+    # Save the generated manifesto as PDF
+    create_pdf(title, text)
+
+    # Create a HTML version of the manifesto
+    create_manifesto_html(title, text, "/content/drive/MyDrive/mani/in/images/RGB")
+
+    # Save the manifesto data to JSON files
+    keywords_str = ", ".join(keywords)
+    example_text = manifestos_text.split('\n\n')[0]
+    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_manifesto_to_json(title, text, keywords_str, example_text, date_time, output_folder, links)
+
+    return f"Manifesto '{title}' has been created successfully."
     # Check if the new manifesto data is a duplicate
     is_duplicate = any(data["title"] == title for data in existing_data)
 
