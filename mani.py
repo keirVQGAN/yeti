@@ -244,7 +244,7 @@ def create_pdf(title, text):
         name="TitleStyle", fontName="Oswald-Bold", fontSize=36, alignment=1, spaceAfter=0.5, textTransform='uppercase', leading=38
     )
     subtitle_style = ParagraphStyle(
-        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=1
+        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=1, leading=21
     )
     body_style = ParagraphStyle(
         name="BodyStyle", fontName="Inter-Light", fontSize=10, alignment=4, spaceAfter=1, leading=12
