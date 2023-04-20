@@ -115,6 +115,46 @@ def select_image(image_dir, color_space):
 
     return image_path
 
+def save_json(title, text, keywords, example_text, date_time, links):
+    """Save the manifesto information to a JSON file and to an individual JSON file for each manifesto."""
+    # Prepare manifesto data
+    manifesto_data = {
+        "title": title,
+        "text": text,
+        "keywords": keywords,
+        "example_text": example_text,
+        "date_time": date_time,
+        "link": links
+    }
+    
+    # Create the JSON output file path for the single manifesto
+    single_json_output_path = f"/content/drive/MyDrive/mani/out/manifestos/{title}/{title}.json"
+
+    # Save the single manifesto data to a JSON file
+    with open(single_json_output_path, 'w') as f:
+        json.dump(manifesto_data, f, indent=4)
+
+    # Create the JSON output file path for the main JSON file
+    main_json_output_path = '/content/drive/MyDrive/mani/out/json/manifesto_data.json'
+
+    # Load existing data or create an empty list if the main JSON file does not exist
+    existing_data = []
+    if os.path.exists(main_json_output_path):
+        with open(main_json_output_path, 'r') as f:
+            existing_data = json.load(f)
+
+    # Check if the new manifesto data is a duplicate
+    is_duplicate = any(data["title"] == title for data in existing_data)
+
+    # Append the new manifesto data to the existing data if it's not a duplicate
+    if not is_duplicate:
+        existing_data.append(manifesto_data)
+
+        # Write the updated data back to the main JSON output file
+        with open(main_json_output_path, 'w') as f:
+            json.dump(existing_data, f, indent=4)
+
+
 def html(title, text):
     """
     Create an HTML file for a manifesto with the specified title, text, and image.
@@ -223,45 +263,3 @@ def create_pdf(title, text):
     # Build document
     flowables = [image, Spacer(1, 12), title_paragraph, Spacer(1, 12), subtitle_paragraph, Spacer(1, 12), body_paragraph]
     doc.build(flowables)
-            
-def manifesto(manifestos_limit, keywords, render=True):
-    # Select a random sample of manifestos and get their links and sampled text
-    links, manifestos_text = get_selected_manifestos_text(manifestos_limit=manifestos_limit)
-
-    # Generate a title for the manifesto based on the selected manifestos text
-    title = generate_manifesto_title(manifestos_text)
-
-    # Create a folder for the manifesto
-    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
-    os.makedirs(output_folder, exist_ok=True)
-
-    # Generate a manifesto using GPT-3 API
-    if render:
-        text = create_manifesto(manifestos_text, keywords)
-    else:
-        text = "Sample generated text"
-    
-    # Save the generated manifesto as PDF
-    create_pdf(title, text)
-
-    # Create a HTML version of the manifesto
-    create_manifesto_html(title, text, "/content/drive/MyDrive/mani/in/images/RGB")
-
-    # Save the manifesto data to JSON files
-    keywords_str = ", ".join(keywords)
-    example_text = manifestos_text.split('\n\n')[0]
-    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    save_manifesto_to_json(title, text, keywords_str, example_text, date_time, output_folder, links)
-
-    return f"Manifesto '{title}' has been created successfully."
-    # Check if the new manifesto data is a duplicate
-    is_duplicate = any(data["title"] == title for data in existing_data)
-
-    # Append the new manifesto data to the existing data if it's not a duplicate
-    if not is_duplicate:
-        existing_data.append(manifesto_data)
-
-        # Write the updated data back to the main JSON output file
-        with open(main_json_output_path, 'w') as f:
-            json.dump(existing_data, f, indent=4)
-
