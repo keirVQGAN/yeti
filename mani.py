@@ -103,7 +103,7 @@ def get_manifesto_sample(text, sample_limit):
                 sample = ' '.join(words[:i]) + ' '
             return (sample.rstrip() + '...').rstrip()
 
-def create(manifestos_text, keywordA, keywordB, keywordC, keywordD):
+def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model=gpt-3.5-turbo):
     messages = [
         {
             "role": "system",
@@ -114,10 +114,10 @@ def create(manifestos_text, keywordA, keywordB, keywordC, keywordD):
             "content": f"Create a two-paragraph manifesto based on this example: {manifestos_text}. It should focus on care, sustainability, and the significance of indigenous and more-than-human knowledge, using these <mark>keywords</mark>: {keywordA}, {keywordB}, {keywordC}. The manifesto should be poetic, accessible, and aligned with contemporary writing styles, and should not exceed 250 words. Start with a 7-word subtitle, followed by the main text. The manifesto will help the recipient reconnect with the more-than-human world through their more-than-human guide ({keywordD})."
         }
     ]
-    response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
+    response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip()
 
-def title(manifesto_text):
+def title(manifesto_text, model=gpt-3.5-turbo)):
     messages = [
         {
             "role": "system",
@@ -128,7 +128,7 @@ def title(manifesto_text):
             "content": f"Generate a title for the following manifesto using no more than three words and no non-alphabet characters. Consider the essence and emotions conveyed by the manifesto: {manifesto_text[:50]}..."
         }
     ]
-    response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
+    response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip().replace('"', '')
 
 def select_image(image_dir, color_space):
