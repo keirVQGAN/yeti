@@ -46,7 +46,7 @@ def image(animal, api_key, prompt, init_image, width=512, height=512, samples=2,
     if response.status_code == 200:
         response_data = response.json()
         # save response data to a unique JSON file
-        filename = f'{animal}.json'
+        filename = f'{output_dir}/{animal}.json'
         filepath = os.path.join(output_dir, filename)
         with open(filepath, 'w') as f:
             json.dump(response_data, f)
@@ -57,7 +57,7 @@ def image(animal, api_key, prompt, init_image, width=512, height=512, samples=2,
         for url in image_urls:
             response = requests.get(url)
             filename = f'{animal}.jpg'
-            filepath = f'{output_dir}/filename'
+            filepath = f'{output_dir}/{filename}'
             with open(filepath, 'wb') as f:
                 f.write(response.content)
             image_paths.append(filepath)
