@@ -115,7 +115,7 @@ def select_image(image_dir, color_space):
 
     return image_path
 
-def create_manifesto_html(title, text, image_dir):
+def html(title, text):
     """
     Create an HTML file for a manifesto with the specified title, text, and image.
 
@@ -130,7 +130,7 @@ def create_manifesto_html(title, text, image_dir):
     # Load the HTML template
     with open('/content/drive/MyDrive/mani/in/html/manifesto_template.html') as f:
         html_template = f.read()
-
+  
     # Remove the first sentence from the text
     text = text.split('. ', 1)[1]
 
@@ -138,6 +138,7 @@ def create_manifesto_html(title, text, image_dir):
     paragraphs = [f'<p>{p.strip()}</p>' for p in text.split('\n\n')]
 
     # Get a random image from the specified directory
+    image_dir = '/content/drive/MyDrive/mani/in/images/RGB'
     images = [file for file in os.listdir(image_dir) if file.endswith('.png')]
     if images:
         image_path = os.path.join(image_dir, random.choice(images))
