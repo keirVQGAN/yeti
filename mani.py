@@ -2,15 +2,13 @@ import base64, json, random, subprocess
 from io import BytesIO
 import numpy as np
 from PIL import Image
-from reportlab.lib.pagesizes import A4, inch
+from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Image as RLImage, Paragraph, Spacer
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.utils import ImageReader as RLImage
-from reportlab.pdfgen import canvas
 import os
 from datetime import datetime
 import openai
