@@ -65,7 +65,7 @@ def get_manifesto_sample(text, sample_limit):
                 sample = ' '.join(words[:i]) + ' '
             return (sample.rstrip() + '...').rstrip()
 
-def create_manifesto(manifestos_text, keywordA, keywordB, keywordC, keywordD):
+def create(manifestos_text, keywordA, keywordB, keywordC, keywordD):
     messages = [
         {
             "role": "system",
@@ -79,7 +79,7 @@ def create_manifesto(manifestos_text, keywordA, keywordB, keywordC, keywordD):
     response = openai.ChatCompletion.create(model='gpt-4', messages=messages)
     return response.choices[0].message.content.strip()
 
-def generate_title(manifesto_text):
+def title(manifesto_text):
     messages = [
         {
             "role": "system",
