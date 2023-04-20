@@ -57,7 +57,7 @@ def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512
         for url in image_urls:
             response = requests.get(url)
             filename = f'{animal}.jpg'
-            filepath = f'{output_dir}'
+            filepath = os.path.join(output_dir, filename)
             with open(filepath, 'wb') as f:
                 f.write(response.content)
             image_paths.append(filepath)
