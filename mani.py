@@ -1,4 +1,4 @@
-import base64, json, random, subprocess, os, requests, openai
+import base64, json, random, subprocess, os, requests, openai, hashlib
 import shutil
 import numpy as np
 from PIL import Image
@@ -292,4 +292,104 @@ def sync(folder_path):
                 else:
                     print(f"File {file} already exists in {destination_file_path}. Skipping.")
 
+def get_file_hash(file_path):
+    with open(file_path, 'rb') as f:
+        file_data = f.read()
+        file_hash = hashlib.md5(file_data).hexdigest()
+    return file_hash
+
+def sync_folder(folder_path):
+    master_folder = "/content/drive/MyDrive/mani/out/master"
+    file_extensions = {"html", "json", "pdf", "jpg"}
+
+    # Create the subfolders if they don't exist
+    os.makedirs(os.path.join(master_folder, "manifestos"), exist_ok=True)
+
+    for ext in file_extensions:
+        os.makedirs(os.path.join(master_folder, "manifestos", ext), exist_ok=True)
+
+    # Walk through the folder structure
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_ext = file.split(".")[-1]
+
+            if file_ext in file_extensions:
+                destination_folder = os.path.join(master_folder, "manifestos", file_ext)
+                destination_file_path = os.path.join(destination_folder, file)
+
+                # Only copy the file if it doesn't exist in the destination folder
+                if not os.path.exists(destination_file_path):
+                    shutil.copy(file_path, destination_file_path)
+                    print(f"Copied {file_path} to {destination_file_path}")
+                else:
+                    # Check if file size or hash is different
+                    source_file_size = os.path.getsize(file_path)
+                    destination_file_size = os.path.getsize(destination_file_path)
+                    source_file_hash = get_file_hash(file_path)
+                    destination_file_hash = get_file_hash(destination_file_path)
+
+                    if source_file_size != destination_file_size or source_file_hash != destination_file_hash:
+                        # Add a unique number as a suffix to the file name
+                        unique_number = 1
+                        while True:
+                            new_file_name = f"{os.path.splitext(file)[0]}_{unique_number:02d}.{file_ext}"
+                            new_destination_file_path = os.path.join(destination_folder, new_file_name)
+
+                            if not os.path.exists(new_destination_file_path):
+                                shutil.copy(file_path, new_destination_file_path)
+                                print(f"Copied {file_path} to {new_destination_file_path} with unique number")
+                                break
+
+                            unique_number += 1
+                    else:
+                        print(f"File {file} already exists in {destination_file_path}. Skipping.")
+
 def create_pdf(title, text, image_path):
+
+    # Prepare output file path
+    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = f"{output_folder}/{title}.pdf"
+
+    # Create the document with reduced top margin
+    doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.3)
+
+    # Register custom fonts
+    font_folder = "/content/drive/MyDrive/mani/fonts"
+    pdfmetrics.registerFont(TTFont("Oswald-Bold", f"{font_folder}/oswald/Oswald-Bold.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Regular", f"{font_folder}/inter/Inter-Regular.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Light", f"{font_folder}/inter/Inter-Light.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Medium", f"{font_folder}/inter/Inter-Medium.ttf"))
+
+    # Prepare styles
+    title_style = ParagraphStyle(
+        name="TitleStyle", fontName="Oswald-Bold", fontSize=36, alignment=1, spaceAfter=0.5, textTransform='uppercase', leading=38
+    )
+    subtitle_style = ParagraphStyle(
+        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=1, leading=21
+    )
+    body_style = ParagraphStyle(
+        name="BodyStyle", fontName="Inter-Light", fontSize=10, alignment=4, spaceAfter=1, leading=12
+    )
+
+    # Add image
+    image = RLImage(image_path, 250 * 4 / 3, 250 * 4 / 3)
+    image.Align = 'CENTER'
+
+    # Add title
+    title_paragraph = Paragraph(title, title_style)
+
+    # Split text into subtitle and body
+    subtitle, body = text.split('\n', 1)
+
+    # Add subtitle
+    subtitle_paragraph = Paragraph(subtitle, subtitle_style)
+
+    # Add body text
+    body = body.replace('\n', '<br/>')  # Replace newlines with HTML line breaks
+    body_paragraph = Paragraph(body, body_style)
+
+    # Build document
+    flowables = [image, Spacer(1, 12), title_paragraph, Spacer(1, 12), subtitle_paragraph, Spacer(1, 12), body_paragraph]
+    doc.build(flowables)
