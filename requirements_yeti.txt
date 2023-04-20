@@ -6,3 +6,4 @@ langchain
 python-dotenv
 reportlab
 pdfkit
+fpdf
