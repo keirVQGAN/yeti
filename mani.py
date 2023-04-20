@@ -15,7 +15,7 @@ import os
 from datetime import datetime
 import openai
 
-def get_selected_manifestos_text(manifestos_limit=5, sample_limit=500):
+def sample(manifestos_limit=5, sample_limit=500):
     """Select a random sample of manifestos and return their links and sampled text."""
     # Load the manifestos data
     with open('/content/drive/MyDrive/mani/in/json/manifestos.json') as f:
