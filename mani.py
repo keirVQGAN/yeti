@@ -200,16 +200,13 @@ def create_manifesto_html(title, text, image_dir):
         f.write(html_content)   
 
 def create_pdf(title, text):
-    # Define required paths and folders
-    image_folder = "/content/drive/MyDrive/mani/in/images/CMYK"
-    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
-    font_folder = "/content/drive/MyDrive/mani/fonts"
-
     # Randomly select an image from the specified folder
+    image_folder = "/content/drive/MyDrive/mani/in/images/CMYK"
     image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(".jpg")]
     image_path = os.path.join(image_folder, random.choice(image_files))
 
     # Prepare output file path
+    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
     os.makedirs(output_folder, exist_ok=True)
     output_file = f"{output_folder}/{title}.pdf"
 
@@ -217,11 +214,11 @@ def create_pdf(title, text):
     doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.5)
 
     # Register custom fonts
-    fonts = [("Oswald-Bold", "oswald/Oswald-Bold.ttf"), ("Inter-Regular", "inter/Inter-Regular.ttf"),
-             ("Inter-Light", "inter/Inter-Light.ttf"), ("Inter-Medium", "inter/Inter-Medium.ttf")]
-
-    for font_name, font_path in fonts:
-        pdfmetrics.registerFont(TTFont(font_name, f"{font_folder}/{font_path}"))
+    font_folder = "/content/drive/MyDrive/mani/fonts"
+    pdfmetrics.registerFont(TTFont("Oswald-Bold", f"{font_folder}/oswald/Oswald-Bold.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Regular", f"{font_folder}/inter/Inter-Regular.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Light", f"{font_folder}/inter/Inter-Light.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Medium", f"{font_folder}/inter/Inter-Medium.ttf"))
 
     # Prepare styles
     title_style = ParagraphStyle(
@@ -254,34 +251,6 @@ def create_pdf(title, text):
     # Build document
     flowables = [image, Spacer(1, 12), title_paragraph, Spacer(1, 12), subtitle_paragraph, Spacer(1, 12), body_paragraph]
     doc.build(flowables)
-
-def save_manifesto_to_json(title, text, keywords, example_text, date_time, output_folder, links):
-    """Save the manifesto information to a JSON file and to an individual JSON file for each manifesto."""
-    # Prepare manifesto data
-    manifesto_data = {
-        "title": title,
-        "text": text,
-        "keywords": keywords,
-        "example_text": example_text,
-        "date_time": date_time,
-        "link": links
-    }
-    
-    # Create the JSON output file path for the single manifesto
-    single_json_output_path = f"/content/drive/MyDrive/mani/out/manifestos/{title}/{title}.json"
-
-    # Save the single manifesto data to a JSON file
-    with open(single_json_output_path, 'w') as f:
-        json.dump(manifesto_data, f, indent=4)
-
-    # Create the JSON output file path for the main JSON file
-    main_json_output_path = '/content/drive/MyDrive/mani/out/json/manifesto_data.json'
-
-    # Load existing data or create an empty list if the main JSON file does not exist
-    existing_data = []
-    if os.path.exists(main_json_output_path):
-        with open(main_json_output_path, 'r') as f:
-            existing_data = json.load(f)
             
 def manifesto(manifestos_limit, keywords, render=True):
     # Select a random sample of manifestos and get their links and sampled text
