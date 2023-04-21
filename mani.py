@@ -73,11 +73,11 @@ def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model='gpt-3
     messages = [
         {
             "role": "system",
-            "content": "You are a highly creative and skilled writer. Craft an engaging and captivating manifesto by considering different perspectives, emotions, and vivid imagery."
+            "content": "You are a highly creative and skilled writer. Your task is to craft a compelling and powerful manifesto, taking into account diverse perspectives, evocative language, and strong emotions. Channel your expertise to create an impactful and thought-provoking piece."
         },
         {
             "role": "user",
-            "content": f"Create a two-paragraph manifesto based on this example: {manifestos_text}. It should focus on care, sustainability, and the significance of indigenous and more-than-human knowledge, using these <mark>keywords</mark>: {keywordA}, {keywordB}, {keywordC}. The manifesto should be poetic, accessible, and aligned with contemporary writing styles, and should not exceed 250 words. Start with a 7-word subtitle, followed by the main text. The manifesto will help the recipient reconnect with the more-than-human world through their more-than-human guide ({keywordD})."
+            "content": f"Compose a two-paragraph manifesto inspired by these excerpts: {manifestos_text}. Address the Care Pavilion's themes of re-imagining care politics and ethics with an intersectional lens, emphasizing sustainability, and insights from indigenous and more-than-human perspectives. Skillfully weave <mark>keywords</mark>: {keywordA} (element), {keywordB} (landscape), and {keywordC} (personal value); envision {keywordA} within a {keywordB} landscape, underlining {keywordC}. Write in an engaging, contemporary, and compelling style, limited to 250 words. Begin with a 5-word subtitle. Guide readers to reconnect with the more-than-human world, led by {keywordD} (more-than-human guide), embodying {keywordA}, {keywordB}, and {keywordC}."
         }
     ]
     response = openai.ChatCompletion.create(model=model, messages=messages)
