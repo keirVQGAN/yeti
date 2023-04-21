@@ -238,8 +238,10 @@ def html(title, text, image_path):
     with open('/content/drive/MyDrive/mani/in/html/manifesto_template.html') as f:
         html_template = f.read()
 
-    # Wrap each paragraph in <p> tags
-    paragraphs = [f'<p>{p.strip()}</p>' for p in text.split('\n\n')]
+    # Separate the first line (subtitle) and the rest of the text
+    subtitle, *body = text.split('\n\n', 1)
+    subtitle_html = f'<h3 class="subtitle">{subtitle}</h3>'
+    body_html = ''.join([f'<p>{p.strip()}</p>' for p in body[0].split('\n\n')])
 
     # Load the image
     with PILImage.open(image_path) as img:
@@ -260,7 +262,7 @@ def html(title, text, image_path):
         os.remove('temp_image.png')
 
     # Replace the placeholders with the specified title, text, and image
-    html_content = html_template.replace("{{ title }}", title).replace("{{ text }}", ''.join(paragraphs)).replace("{{ image }}", f'data:image/png;base64,{image_data}')
+    html_content = html_template.replace("{{ title }}", title).replace("{{ subtitle }}", subtitle_html).replace("{{ text }}", body_html).replace("{{ image }}", f'data:image/png;base64,{image_data}')
 
     # Save the HTML content to a file with a unique name based on the title
     filename = f'{title.lower().replace(" ", "_")}.html'
@@ -370,7 +372,7 @@ def create_pdf(title, text, image_path):
         name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=0.1, leading=18
     )
     body_style = ParagraphStyle(
-        name="BodyStyle", fontName="Inter-Light", fontSize=12, alignment=4, spaceAfter=1, leading=14
+        name="BodyStyle", fontName="Inter-Light", fontSize=12, alignment=4, spaceAfter=1, leading=16
     )
 
     # Add image
