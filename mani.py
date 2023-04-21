@@ -19,20 +19,32 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
+def upload_images(folder_path, type_tag):
     output_path = "/content/drive/MyDrive/mani/in/images/upload"
     output_file = "free_images.json"
     api_key = "6d207e02198a847aa98d0a2a901485a5"
     existing_data = []
     uploaded_images = []
+
+    # Load existing image data from file
     if os.path.exists(os.path.join(output_path, output_file)):
         with open(os.path.join(output_path, output_file), "r") as file:
             existing_data = json.load(file)
+
+    # Calculate batch start time and batch identifier
+    batch_start_time = datetime.now()
+    batch_id = batch_start_time.strftime("%Y%m%d%H%M%S")
+
+    # Tag uploaded images with batch identifier and upload to API
     for filename in os.listdir(folder_path):
         if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tiff"):
             file_path = os.path.join(folder_path, filename)
+            with Image.open(file_path) as img:
+                width, height = img.size
+                colour_tag = img.mode
+
             if any(image.get('name') == filename and image.get('tags', {}).get('colour') == colour_tag 
-                   and image.get('tags', {}).get('height') == height_tag and image.get('tags', {}).get('width') == width_tag
+                   and image.get('tags', {}).get('height') == height and image.get('tags', {}).get('width') == width
                    and image.get('tags', {}).get('type') == type_tag for image in existing_data):
                 print(f"{filename} has already been uploaded.")
                 continue
@@ -51,12 +63,15 @@ def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
                 "uploaded_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "tags": {
                     "colour": colour_tag,
-                    "height": height_tag,
-                    "width": width_tag,
-                    "type": type_tag
+                    "height": height,
+                    "width": width,
+                    "type": type_tag,
+                    "batch_id": batch_id
                 }
             })
             print(f"{filename} uploaded successfully.")
+
+    # Append uploaded images to existing image data and save to file
     if uploaded_images:
         if not existing_data:
             existing_data = uploaded_images
