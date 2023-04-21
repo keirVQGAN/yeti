@@ -87,11 +87,11 @@ def title(manifesto_text, model='gpt-3.5-turbo'):
     messages = [
         {
             "role": "system",
-            "content": "You are an expert at creating concise and powerful titles for written works."
+            "content": "You have a knack for crafting impactful and memorable titles that capture the essence of written works"
         },
         {
             "role": "user",
-            "content": f"Generate a title for the following manifesto using no more than three words and no non-alphabet characters. Consider the essence and emotions conveyed by the manifesto: {manifesto_text[:50]}..."
+            "content": f"Create a title for the following manifesto using a maximum of three words and only alphabet characters. Reflect on the core themes and emotions conveyed by the manifesto: {manifesto_text[:50]}..."
         }
     ]
     response = openai.ChatCompletion.create(model=model, messages=messages)
