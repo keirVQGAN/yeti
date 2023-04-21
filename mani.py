@@ -97,7 +97,7 @@ def title(manifesto_text, model='gpt-3.5-turbo'):
     response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip().replace('"', '')
 
-def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=3, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
+def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
     url = 'https://stablediffusionapi.com/api/v3/img2img'
     headers = {'Content-Type': 'application/json'}
     output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{MANI_TITLE}'
