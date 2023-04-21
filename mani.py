@@ -19,6 +19,50 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
+    output_path = "/content/drive/MyDrive/mani/in/images/upload"
+    output_file = "free_images.json"
+    api_key = "6d207e02198a847aa98d0a2a901485a5"
+    existing_data = []
+    uploaded_images = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tiff"):
+            with open(os.path.join(folder_path, filename), "rb") as file:
+                encoded_string = base64.b64encode(file.read()).decode("utf-8")
+            data = {
+                "key": api_key,
+                "source": encoded_string,
+                "format": "json"
+            }
+            response = requests.post("https://freeimage.host/api/1/upload", data=data)
+            image_data = response.json()
+            uploaded_image = {
+                "url": image_data["image"]["url"],
+                "name": filename,
+                "uploaded_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "tags": {
+                    "colour": colour_tag,
+                    "height": height_tag,
+                    "width": width_tag,
+                    "type": type_tag
+                }
+            }
+            if uploaded_image not in uploaded_images:
+                uploaded_images.append(uploaded_image)
+                print(f"Image {filename} uploaded successfully.")
+            else:
+                print(f"Image {filename} already uploaded.")
+    if os.path.exists(os.path.join(output_path, output_file)):
+        with open(os.path.join(output_path, output_file), "r") as file:
+            existing_data = json.load(file)
+    for image in uploaded_images:
+        if image not in existing_data:
+            existing_data.append(image)
+    with open(os.path.join(output_path, output_file), "w") as file:
+        json.dump(existing_data, file, indent=4)
+    print("All images uploaded successfully.")
+    return uploaded_images
+
 def sample(manifestos_limit=5, sample_limit=500):
     """Select a random sample of manifestos and return their links and sampled text."""
     # Load the manifestos data
