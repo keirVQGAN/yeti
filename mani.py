@@ -321,7 +321,7 @@ def sync_folder(folder_path):
                 # Only copy the file if it doesn't exist in the destination folder
                 if not os.path.exists(destination_file_path):
                     shutil.copy(file_path, destination_file_path)
-                    print(f"Copied {file_path} to {destination_file_path}")
+                    # print(f"Copied {file_path} to {destination_file_path}")
                 else:
                     # Check if file size or hash is different
                     source_file_size = os.path.getsize(file_path)
@@ -338,7 +338,7 @@ def sync_folder(folder_path):
 
                             if not os.path.exists(new_destination_file_path):
                                 shutil.copy(file_path, new_destination_file_path)
-                                print(f"Copied {file_path} to {new_destination_file_path} with unique number")
+                                # print(f"Copied {file_path} to {new_destination_file_path} with unique number")
                                 break
 
                             unique_number += 1
@@ -367,10 +367,10 @@ def create_pdf(title, text, image_path):
         name="TitleStyle", fontName="Oswald-Bold", fontSize=36, alignment=1, spaceAfter=0.5, textTransform='uppercase', leading=38
     )
     subtitle_style = ParagraphStyle(
-        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=1, leading=21
+        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=0.1, leading=18
     )
     body_style = ParagraphStyle(
-        name="BodyStyle", fontName="Inter-Light", fontSize=10, alignment=4, spaceAfter=1, leading=12
+        name="BodyStyle", fontName="Inter-Light", fontSize=12, alignment=4, spaceAfter=1, leading=14
     )
 
     # Add image
