@@ -25,9 +25,18 @@ def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
     api_key = "6d207e02198a847aa98d0a2a901485a5"
     existing_data = []
     uploaded_images = []
+    if os.path.exists(os.path.join(output_path, output_file)):
+        with open(os.path.join(output_path, output_file), "r") as file:
+            existing_data = json.load(file)
     for filename in os.listdir(folder_path):
         if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tiff"):
-            with open(os.path.join(folder_path, filename), "rb") as file:
+            file_path = os.path.join(folder_path, filename)
+            if any(image.get('name') == filename and image.get('tags', {}).get('colour') == colour_tag 
+                   and image.get('tags', {}).get('height') == height_tag and image.get('tags', {}).get('width') == width_tag
+                   and image.get('tags', {}).get('type') == type_tag for image in existing_data):
+                print(f"{filename} has already been uploaded.")
+                continue
+            with open(file_path, "rb") as file:
                 encoded_string = base64.b64encode(file.read()).decode("utf-8")
             data = {
                 "key": api_key,
@@ -36,7 +45,7 @@ def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
             }
             response = requests.post("https://freeimage.host/api/1/upload", data=data)
             image_data = response.json()
-            uploaded_image = {
+            uploaded_images.append({
                 "url": image_data["image"]["url"],
                 "name": filename,
                 "uploaded_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -46,22 +55,41 @@ def upload_images(folder_path, colour_tag, height_tag, width_tag, type_tag):
                     "width": width_tag,
                     "type": type_tag
                 }
-            }
-            if uploaded_image not in uploaded_images:
-                uploaded_images.append(uploaded_image)
-                print(f"Image {filename} uploaded successfully.")
-            else:
-                print(f"Image {filename} already uploaded.")
-    if os.path.exists(os.path.join(output_path, output_file)):
-        with open(os.path.join(output_path, output_file), "r") as file:
-            existing_data = json.load(file)
-    for image in uploaded_images:
-        if image not in existing_data:
-            existing_data.append(image)
-    with open(os.path.join(output_path, output_file), "w") as file:
-        json.dump(existing_data, file, indent=4)
-    print("All images uploaded successfully.")
-    return uploaded_images
+            })
+            print(f"{filename} uploaded successfully.")
+    if uploaded_images:
+        if not existing_data:
+            existing_data = uploaded_images
+        else:
+            for image in uploaded_images:
+                existing_data.append(image)
+        with open(os.path.join(output_path, output_file), "w") as file:
+            json.dump(existing_data, file, indent=4)
+        print("Images uploaded successfully.")
+        uploaded_urls = [image["url"] for image in uploaded_images]
+        return uploaded_urls
+    else:
+        print("No new images uploaded.")
+        return []
+
+def search_images(colour=None, height=None, width=None, image_type=None):
+    output_path = "/content/drive/MyDrive/mani/in/images/upload"
+    output_file = "free_images.json"
+
+    # Load image data from file
+    with open(f"{output_path}/{output_file}", "r") as f:
+        image_data = json.load(f)
+
+    # Filter image data based on tags
+    filtered_data = []
+    for image in image_data:
+        if (not colour or image["tags"].get('colour') == colour) and \
+                (not height or image["tags"].get('height') == height) and \
+                (not width or image["tags"].get('width') == width) and \
+                (not image_type or image["tags"].get('type') == image_type):
+            filtered_data.append(image['url'])
+
+    return filtered_data
 
 def sample(manifestos_limit=5, sample_limit=500):
     """Select a random sample of manifestos and return their links and sampled text."""
