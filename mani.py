@@ -39,7 +39,7 @@ def upload_images(folder_path, type_tag):
     for filename in os.listdir(folder_path):
         if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tiff"):
             file_path = os.path.join(folder_path, filename)
-            with Image.open(file_path) as img:
+            with PILImage.open(file_path) as img:
                 width, height = img.size
                 colour_tag = img.mode
 
@@ -184,8 +184,7 @@ def title(manifesto_text, model='gpt-3.5-turbo'):
     response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip().replace('"', '')
 
-def image(MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
-    url = 'https://stablediffusionapi.com/api/v3/img2img'
+def image(url, MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
     headers = {'Content-Type': 'application/json'}
     output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{MANI_TITLE}'
     data = {
@@ -459,7 +458,7 @@ def create_pdf(title, text, image_path):
         name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=0.1, leading=18
     )
     body_style = ParagraphStyle(
-        name="BodyStyle", fontName="Inter-Light", fontSize=12, alignment=4, spaceAfter=1, leading=16
+        name="BodyStyle", fontName="Inter-Light", fontSize=11, alignment=4, spaceAfter=1, leading=13
     )
 
     # Add image
