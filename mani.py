@@ -141,10 +141,13 @@ def image_prompt(animal, model='gpt-4'):
     response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip()
 
-def image(title, animal, api_key, prompt, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
+def image(title, animal, api_key, prompt, width=512, height=512, samples=2, mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='no', seed=None, webhook=None, track_id=None):
     def clean_filename(text):
         result = text.replace(' ', '_')
         return result
+    negative='/content/drive/MyDrive/mani/in/txt/negative_prompts.txt'
+    with open(negative, 'r') as file:
+        negative_prompt = file.read()
 
     headers = {'Content-Type': 'application/json'}
     output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{title}'
