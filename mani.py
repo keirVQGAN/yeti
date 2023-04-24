@@ -1,16 +1,21 @@
-import base64, json, random, subprocess, os, requests, openai, hashlib
-import shutil
+#@markdown > **yeti**Manifesto `mani.py`
+import base64, datetime, hashlib, heapq, json, os, random, re, requests, shutil, subprocess
 import numpy as np
+import openai
+
 from PIL import Image
 from io import BytesIO
-from datetime import datetime
+import datetime
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
 
 from rich.console import Console
 from rich.table import Table
 from rich.markdown import Markdown
-from IPython.display import display, Image
-from PIL import Image as PILImage
 
+from IPython.display import display, Image as IPythonImage
+from PIL import Image as PILImage
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Image as RLImage, Paragraph, Spacer
@@ -19,179 +24,135 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-def upload_images(folder_path, type_tag):
-    output_path = "/content/drive/MyDrive/mani/in/images/upload"
-    output_file = "free_images.json"
-    api_key = "6d207e02198a847aa98d0a2a901485a5"
-    existing_data = []
-    uploaded_images = []
+def get_file_hash(file_path):
+    with open(file_path, 'rb') as f:
+        file_data = f.read()
+        file_hash = hashlib.md5(file_data).hexdigest()
+    return file_hash
 
-    # Load existing image data from file
-    if os.path.exists(os.path.join(output_path, output_file)):
-        with open(os.path.join(output_path, output_file), "r") as file:
-            existing_data = json.load(file)
+def manifesto(role, question, keywordA, keywordB, keywordC, keywordD, model, manifestos_limit=5, sample_limit=500):
+    def preprocess_text(text):
+        text = text.lower()
+        text = re.sub(r'\W', ' ', text)
+        text = re.sub(r'\s+', ' ', text)
+        return text.strip()
 
-    # Calculate batch start time and batch identifier
-    batch_start_time = datetime.now()
-    batch_id = batch_start_time.strftime("%Y%m%d%H%M%S")
+    def select_top_k_sentences(text, k=5):
+        sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', text)
+        tfidf = TfidfVectorizer()
+        tfidf_matrix = tfidf.fit_transform(sentences)
+        top_k_indices = heapq.nlargest(k, range(len(sentences)), tfidf_matrix.sum(axis=1).take)
+        return ' '.join([sentences[i] for i in top_k_indices])
 
-    # Tag uploaded images with batch identifier and upload to API
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tiff"):
-            file_path = os.path.join(folder_path, filename)
-            with PILImage.open(file_path) as img:
-                width, height = img.size
-                colour_tag = img.mode
+    def sample(manifestos_limit=5, sample_limit=500):
+        with open('/content/drive/MyDrive/mani/in/json/manifestos.json') as f:
+            manifestos_data = json.load(f)
 
-            if any(image.get('name') == filename and image.get('tags', {}).get('colour') == colour_tag 
-                   and image.get('tags', {}).get('height') == height and image.get('tags', {}).get('width') == width
-                   and image.get('tags', {}).get('type') == type_tag for image in existing_data):
-                print(f"{filename} has already been uploaded.")
-                continue
-            with open(file_path, "rb") as file:
-                encoded_string = base64.b64encode(file.read()).decode("utf-8")
-            data = {
-                "key": api_key,
-                "source": encoded_string,
-                "format": "json"
-            }
-            response = requests.post("https://freeimage.host/api/1/upload", data=data)
-            image_data = response.json()
-            uploaded_images.append({
-                "url": image_data["image"]["url"],
-                "name": filename,
-                "uploaded_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "tags": {
-                    "colour": colour_tag,
-                    "height": height,
-                    "width": width,
-                    "type": type_tag,
-                    "batch_id": batch_id
-                }
-            })
-            print(f"{filename} uploaded successfully.")
+        manifestos_data = [m for m in manifestos_data if len(m.get("main_text", "").strip()) >= 50]
+        preprocessed_texts = [preprocess_text(m.get("main_text", "")) for m in manifestos_data]
 
-    # Append uploaded images to existing image data and save to file
-    if uploaded_images:
-        if not existing_data:
-            existing_data = uploaded_images
-        else:
-            for image in uploaded_images:
-                existing_data.append(image)
-        with open(os.path.join(output_path, output_file), "w") as file:
-            json.dump(existing_data, file, indent=4)
-        print("Images uploaded successfully.")
-        uploaded_urls = [image["url"] for image in uploaded_images]
-        return uploaded_urls
-    else:
-        print("No new images uploaded.")
-        return []
+        num_clusters = 5
+        vectorizer = TfidfVectorizer(stop_words='english')
+        X = vectorizer.fit_transform(preprocessed_texts)
+        kmeans = KMeans(n_clusters=num_clusters, random_state=42).fit(X)
 
-def search_images(colour=None, height=None, width=None, image_type=None):
-    output_path = "/content/drive/MyDrive/mani/in/images/upload"
-    output_file = "free_images.json"
+        selected_manifestos = []
+        for cluster in range(num_clusters):
+            cluster_manifestos = [m for idx, m in enumerate(manifestos_data) if kmeans.labels_[idx] == cluster]
+            if cluster_manifestos:
+                selected_manifestos.append(random.choice(cluster_manifestos))
 
-    # Load image data from file
-    with open(f"{output_path}/{output_file}", "r") as f:
-        image_data = json.load(f)
+        while len(selected_manifestos) < manifestos_limit:
+            selected_manifestos.append(random.choice(manifestos_data))
 
-    # Filter image data based on tags
-    filtered_data = []
-    for image in image_data:
-        if (not colour or image["tags"].get('colour') == colour) and \
-                (not height or image["tags"].get('height') == height) and \
-                (not width or image["tags"].get('width') == width) and \
-                (not image_type or image["tags"].get('type') == image_type):
-            filtered_data.append(image['url'])
+        links = [m["link"] for m in selected_manifestos]
 
-    return filtered_data
+        manifestos_text = "\n\n".join([
+            f"Manifesto sample for '{m['title']}': {select_top_k_sentences(m.get('main_text', ''), sample_limit)}"
+            for m in selected_manifestos
+        ])
 
-def sample(manifestos_limit=5, sample_limit=500):
-    """Select a random sample of manifestos and return their links and sampled text."""
-    # Load the manifestos data
-    with open('/content/drive/MyDrive/mani/in/json/manifestos.json') as f:
-        manifestos_data = json.load(f)
+        return links, manifestos_text
 
-    # Select a random sample of manifestos with a minimum text length of 50 characters
-    selected_manifestos = random.sample(
-        [m for m in manifestos_data if len(m.get("main_text", "").strip()) >= 50], manifestos_limit
-    )
+    manifestos_links, manifestos_text = sample(manifestos_limit, sample_limit)
 
-    # Create a list of links to the selected manifestos
-    links = [m["link"] for m in selected_manifestos]
-
-    # Combine the sample of the main text of the selected manifestos
-    manifestos_text = "\n\n".join([
-        "Manifesto sample for '" + m["title"] + "': " + get_manifesto_sample(m.get("main_text", ""), sample_limit)
-        for m in selected_manifestos if m.get("main_text", "").strip()
-    ])
-
-    return links, manifestos_text
-
-def get_manifesto_sample(text, sample_limit):
-    """Return a sample of the text with a maximum length of sample_limit."""
-    words = text.split()
-    sample = ''
-    i = 0
-
-    # Add words to the sample until the sample_limit is reached
-    while i < len(words) and len(sample + words[i]) < sample_limit:
-        sample += words[i] + ' '
-        i += 1
-
-    # If the entire text is within the sample_limit
-    if i == len(words):
-        return sample.rstrip()
-    else:
-        # If the last word has a period
-        if '.' in words[i]:
-            while i < len(words) and len(sample + words[i]) + 1 < sample_limit:
-                sample += words[i] + ' '
-                i += 1
-            return (sample.rstrip() + '...').rstrip()
-        else:
-            # Go back to the last word with a period
-            while i > 0 and '.' not in sample:
-                i -= 1
-                sample = ' '.join(words[:i]) + ' '
-            return (sample.rstrip() + '...').rstrip()
-
-def create(manifestos_text, keywordA, keywordB, keywordC, keywordD, model='gpt-3.5-turbo'):
     messages = [
         {
             "role": "system",
-            "content": "You are a highly creative and skilled writer. Your task is to craft a compelling and powerful manifesto, taking into account diverse perspectives, evocative language, and strong emotions. Channel your expertise to create an impactful and thought-provoking piece."
+            "content": f'{role}'
         },
         {
             "role": "user",
-            "content": f"Compose a two-paragraph manifesto inspired by these excerpts: {manifestos_text}. Address the Care Pavilion's themes of re-imagining care politics and ethics with an intersectional lens, emphasizing sustainability, and insights from indigenous and more-than-human perspectives. Skillfully weave <mark>keywords</mark>: {keywordA} (element), {keywordB} (landscape), and {keywordC} (personal value); envision {keywordA} within a {keywordB} landscape, underlining {keywordC}. Write in an engaging, contemporary, and compelling style, limited to 250 words. Begin with a 5-word subtitle. Guide readers to reconnect with the more-than-human world, led by {keywordD} (more-than-human guide), embodying {keywordA}, {keywordB}, and {keywordC}."
+            "content": f'{question.format(keywordA=keywordA, keywordB=keywordB, keywordC=keywordC, manifestos_text=manifestos_text)}'
         }
     ]
+
+    response = openai.ChatCompletion.create(model=model, messages=messages)
+    result = response.choices[0].message.content.strip()
+
+    title, text = result.split('\n', 1)
+
+    data = {
+        'role': role,
+        'question': question,
+        'manifestos_links': manifestos_links,
+        'samples': manifestos_limit,
+        'characters_sampled': sample_limit,
+        'manifestos_text': manifestos_text,
+        'keywordA': keywordA,
+        'keywordB': keywordB,
+        'keywordC': keywordC,
+        'keywordD': keywordD,
+        'title': title,
+        'text': text.strip(),
+        'model': model,
+        'timestamp': str(datetime.datetime.now())
+    }
+    out_path='/content/drive/MyDrive/mani/out/manifestos'
+    manifesto_dir=f'{out_path}/{title}'
+    os.makedirs(manifesto_dir, exist_ok=True)
+    return result, data, manifesto_dir
+    
+def image_prompt(animal, model='gpt-4'):
+
+    roles = [
+        f"As an AI image creator, your task is to generate a stunning and realistic photographic portrait of a pagan {animal}. Your objective is to provide a brief and concise description of the image, focusing on the visual and technical elements that should be incorporated into the image to create a captivating and harmonious composition that produces a pagan, neo-rave portrait of the {animal}. Ensure the prompt is informed by the qualities and size of the {animal}"
+    ]
+
+    role = random.choice(roles)
+
+    questions = [
+        f"Can you provide a one or two sentence prompt for an AI to generate a visually striking and experimental close-up photographic portrait of a pagan {animal} using custom neon and fluorescent lighting, contemporary and innovative techniques, and a neo-rave or pagan aesthetic? The prompt should start with 'A medium format photograph of' and include technical details such as camera type, lighting, perspective, composition, and color palette. The {animal} should be draped in living garlands of tropical flowers, vines, orchids, moss, lichen, fantastical mushrooms, and other plants to capture its unique features and symbolism and shot at a scale that is approrpiate for the {animal}. Please use concise technical terms and include the statement 'shot with a Hasselblad H6c-100c medium format camera.'"
+    ]
+
+    question = random.choice(questions)
+    
+    messages = [
+        {
+            "role": "system",
+            "content": role
+        },
+        {
+            "role": "user",
+            "content": question
+        }
+    ]
+    
     response = openai.ChatCompletion.create(model=model, messages=messages)
     return response.choices[0].message.content.strip()
 
-def title(manifesto_text, model='gpt-3.5-turbo'):
-    messages = [
-        {
-            "role": "system",
-            "content": "You have a knack for crafting impactful and memorable titles that capture the essence of written works"
-        },
-        {
-            "role": "user",
-            "content": f"Create a title for the following manifesto using a maximum of three words and only alphabet characters. Reflect on the core themes and emotions conveyed by the manifesto: {manifesto_text[:50]}..."
-        }
-    ]
-    response = openai.ChatCompletion.create(model=model, messages=messages)
-    return response.choices[0].message.content.strip().replace('"', '')
+def image(title, animal, api_key, prompt, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
+    def clean_filename(text):
+        result = text.replace(' ', '_')
+        return result
 
-def image(url, MANI_TITLE, animal, api_key, prompt, init_image, width=512, height=512, samples=2, negative_prompt='Repeated Edge, Tiling', mask_image=None, prompt_strength=None, num_inference_steps=30, guidance_scale=7, enhance_prompt='yes', seed=None, webhook=None, track_id=None):
     headers = {'Content-Type': 'application/json'}
-    output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{MANI_TITLE}'
+    output_dir = f'/content/drive/MyDrive/mani/out/manifestos/{title}'
+    url = 'https://stablediffusionapi.com/api/v3/text2img'
     data = {
         "key": api_key,
         "prompt": prompt,
         "negative_prompt": negative_prompt,
-        "init_image": init_image,
         "width": str(width),
         "height": str(height),
         "samples": str(samples),
@@ -202,111 +163,89 @@ def image(url, MANI_TITLE, animal, api_key, prompt, init_image, width=512, heigh
         "webhook": webhook,
         "track_id": track_id
     }
-    
+
     if mask_image:
         data["mask_image"] = mask_image
-    
+
     if prompt_strength:
         data["prompt_strength"] = prompt_strength
-    
+
     response = requests.post(url, data=json.dumps(data), headers=headers)
-    
+
     if response.status_code == 200:
         response_data = response.json()
         # save response data to a unique JSON file
-        filename = f'{animal}.json'
+        filename = f'{animal}_image.json'
         filepath = os.path.join(output_dir, filename)
         with open(filepath, 'w') as f:
             json.dump(response_data, f)
-        
+
         # download the generated images
         image_urls = response_data['output']
         image_paths = []
         for url in image_urls:
             response = requests.get(url)
             filename = f'{animal}.jpg'
+            filename = clean_filename(filename)
             filepath = os.path.join(output_dir, filename)
             with open(filepath, 'wb') as f:
                 f.write(response.content)
             image_paths.append(filepath)
-            
+
         return image_paths
     else:
         raise Exception(f"API call failed with status code {response.status_code}: {response.text}")
 
-def display_info(MANI_TITLE, MANI_TEXT, VALUE, LANDSCAPE, ELEMENT, ANIMAL, MANI_SAMPLE, MANI_SAMPLE_LINKS, image_paths):
-    console = Console()
-    table_width = int(console.width * 0.75)
+def tjson(data,title):
+    file_path_master = '/content/drive/MyDrive/mani/out/json/manifesto_master.json'
+    mode = 'a' if os.path.exists(file_path_master) else 'w'
+    with open(file_path_master, mode) as f:
+        if mode == 'a':
+            f.write(',\n')
+        json.dump(data, f, indent=4)
 
-    main_table = Table(width=table_width, pad_edge=False, collapse_padding=True)
-    main_table.add_column(MANI_TITLE, style="white on black")
+    file_path = f'/content/drive/MyDrive/mani/out/manifestos/{title}/{title}_data.json'    
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=4)
 
-    # Main text
-    main_table.add_row(MANI_TEXT)
+def pdf(title, text, image_path):
+    # Prepare output file path
+    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = f"{output_folder}/{title}.pdf"
 
-    # Table for keywords
-    keywords_table = Table(show_header=False, collapse_padding=True)
-    keywords_table.add_column("Keyword", style="bold white on black")
-    keywords_table.add_column("Value", style="white on black")
-    keywords_table.add_row("Value", VALUE)
-    keywords_table.add_row("Landscape", LANDSCAPE)
-    keywords_table.add_row("Element", ELEMENT)
-    keywords_table.add_row("Animal", ANIMAL)
-    main_table.add_row(keywords_table)
+    # Create the document with reduced top margin
+    doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.4)
 
-    # Sample text
-    main_table.add_row("Sample Text:")
-    main_table.add_row(MANI_SAMPLE)
+    # Register custom fonts
+    font_folder = "/content/drive/MyDrive/mani/fonts"
+    pdfmetrics.registerFont(TTFont("Oswald-Bold", f"{font_folder}/oswald/Oswald-Bold.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Regular", f"{font_folder}/inter/Inter-Regular.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Light", f"{font_folder}/inter/Inter-Light.ttf"))
+    pdfmetrics.registerFont(TTFont("Inter-Medium", f"{font_folder}/inter/Inter-Medium.ttf"))
 
-    # Sample links
-    main_table.add_row("Sample Links:")
-    links_str = "\n".join(f"[{link}]({link})" for link in MANI_SAMPLE_LINKS)
-    main_table.add_row(Markdown(links_str))
+    # Prepare styles
+    title_style = ParagraphStyle(
+        name="TitleStyle", fontName="Oswald-Bold", fontSize=28, alignment=1, spaceBefore=5, spaceAfter=1.5, textTransform='uppercase', leading=38
+    )
+    body_style = ParagraphStyle(
+        name="BodyStyle", fontName="Inter-Light", fontSize=11, alignment=4, spaceAfter=1, leading=14
+    )
 
-    # Display first image in the list, resized to fit the table width
-    first_image_path = image_paths[0]
-    display(Image(filename=first_image_path, width='400', height='400', metadata={"padding": 10, "border": "white"}))
+    # Add image
+    image = RLImage(image_path, 230 * 4 / 3, 230 * 4 / 3)
+    image.Align = 'CENTER'
 
-    console.print(main_table)
+    # Add title
+    title_paragraph = Paragraph(title, title_style)
 
-def save_json(title, text, keywords, example_text, date_time, links):
-    """Save the manifesto information to a JSON file and to an individual JSON file for each manifesto."""
-    # Prepare manifesto data
-    manifesto_data = {
-        "title": title,
-        "text": text,
-        "keywords": keywords,
-        "example_text": example_text,
-        "date_time": date_time,
-        "link": links
-    }
-    
-    # Create the JSON output file path for the single manifesto
-    single_json_output_path = f"/content/drive/MyDrive/mani/out/manifestos/{title}/{title}.json"
+    # Add body text
+    body = text.replace('\n', '<br/>')  # Replace newlines with HTML line breaks
+    body_paragraph = Paragraph(body, body_style)
 
-    # Save the single manifesto data to a JSON file
-    with open(single_json_output_path, 'w') as f:
-        json.dump(manifesto_data, f, indent=4)
-
-    # Create the JSON output file path for the main JSON file
-    main_json_output_path = '/content/drive/MyDrive/mani/out/json/manifesto_data.json'
-
-    # Load existing data or create an empty list if the main JSON file does not exist
-    existing_data = []
-    if os.path.exists(main_json_output_path):
-        with open(main_json_output_path, 'r') as f:
-            existing_data = json.load(f)
-
-    # Check if the new manifesto data is a duplicate
-    is_duplicate = any(data["title"] == title for data in existing_data)
-
-    # Append the new manifesto data to the existing data if it's not a duplicate
-    if not is_duplicate:
-        existing_data.append(manifesto_data)
-
-        # Write the updated data back to the main JSON output file
-        with open(main_json_output_path, 'w') as f:
-            json.dump(existing_data, f, indent=4)
+    # Build document
+    flowables = [image, Spacer(1, 12), title_paragraph, Spacer(1, 12), body_paragraph]
+    doc.build(flowables)
 
 def html(title, text, image_path):
     """
@@ -324,10 +263,8 @@ def html(title, text, image_path):
     with open('/content/drive/MyDrive/mani/in/html/manifesto_template.html') as f:
         html_template = f.read()
 
-    # Separate the first line (subtitle) and the rest of the text
-    subtitle, *body = text.split('\n\n', 1)
-    subtitle_html = f'<h3 class="subtitle">{subtitle}</h3>'
-    body_html = ''.join([f'<p>{p.strip()}</p>' for p in body[0].split('\n\n')])
+    # Convert the text to HTML
+    body_html = ''.join([f'<p>{p.strip()}</p>' for p in text.split('\n\n')])
 
     # Load the image
     with PILImage.open(image_path) as img:
@@ -348,45 +285,14 @@ def html(title, text, image_path):
         os.remove('temp_image.png')
 
     # Replace the placeholders with the specified title, text, and image
-    html_content = html_template.replace("{{ title }}", title).replace("{{ subtitle }}", subtitle_html).replace("{{ text }}", body_html).replace("{{ image }}", f'data:image/png;base64,{image_data}')
+    html_content = html_template.replace("{{ title }}", title).replace("{{ text }}", body_html).replace("{{ image }}", f'data:image/png;base64,{image_data}')
 
     # Save the HTML content to a file with a unique name based on the title
     filename = f'{title.lower().replace(" ", "_")}.html'
     with open(f'/content/drive/MyDrive/mani/out/manifestos/{title}/{filename}', 'w') as f:
         f.write(html_content)
-
+        
 def sync(folder_path):
-    master_folder = "/content/drive/MyDrive/mani/out/master"
-    file_extensions = {"html", "json", "pdf", "jpg"}
-
-    # Create the subfolders if they don't exist
-    for ext in file_extensions:
-        os.makedirs(os.path.join(master_folder, ext), exist_ok=True)
-
-    # Walk through the folder structure
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_ext = file.split(".")[-1]
-
-            if file_ext in file_extensions:
-                destination_folder = os.path.join(master_folder, file_ext)
-                destination_file_path = os.path.join(destination_folder, file)
-
-                # Only copy the file if it doesn't exist in the destination folder
-                if not os.path.exists(destination_file_path):
-                    shutil.copy(file_path, destination_file_path)
-                    print(f"Copied {file_path} to {destination_file_path}")
-                else:
-                    print(f"File {file} already exists in {destination_file_path}. Skipping.")
-
-def get_file_hash(file_path):
-    with open(file_path, 'rb') as f:
-        file_data = f.read()
-        file_hash = hashlib.md5(file_data).hexdigest()
-    return file_hash
-
-def sync_folder(folder_path):
     master_folder = "/content/drive/MyDrive/mani/out/master"
     file_extensions = {"html", "json", "pdf", "jpg"}
 
@@ -433,51 +339,37 @@ def sync_folder(folder_path):
                     else:
                         print(f"File {file} already exists in {destination_file_path}. Skipping.")
 
-def create_pdf(title, text, image_path):
+def process_manifesto(role, question, keywordA, keywordB, keywordC, keywordD, model, sample, characters, animal, stable_api):
 
-    # Prepare output file path
-    output_folder = f"/content/drive/MyDrive/mani/out/manifestos/{title}"
-    os.makedirs(output_folder, exist_ok=True)
-    output_file = f"{output_folder}/{title}.pdf"
+    # Call the create_manifesto function
+    result, data, manifesto_dir = manifesto(role, question, keywordA, keywordB, keywordC, keywordD, model, sample, characters)
 
-    # Create the document with reduced top margin
-    doc = SimpleDocTemplate(output_file, pagesize=A4, topMargin=inch * 0.3)
+    # Set the variables for creating html, pdf and json files.
+    result = data
+    role = result['role']
+    question = result['question']
+    manifestos_links = result['manifestos_links']
+    manifestos_text = result['manifestos_text']
+    keywordA = result['keywordA']
+    keywordB = result['keywordB']
+    keywordC = result['keywordC']
+    keywordD = result['keywordD']
+    title = result['title']
+    text = result['text']
+    model = result['model']
+    timestamp = result['timestamp']
+    print(title)
 
-    # Register custom fonts
-    font_folder = "/content/drive/MyDrive/mani/fonts"
-    pdfmetrics.registerFont(TTFont("Oswald-Bold", f"{font_folder}/oswald/Oswald-Bold.ttf"))
-    pdfmetrics.registerFont(TTFont("Inter-Regular", f"{font_folder}/inter/Inter-Regular.ttf"))
-    pdfmetrics.registerFont(TTFont("Inter-Light", f"{font_folder}/inter/Inter-Light.ttf"))
-    pdfmetrics.registerFont(TTFont("Inter-Medium", f"{font_folder}/inter/Inter-Medium.ttf"))
+    # Generate prompt and image based on manifesto and animal
+    prompt = image_prompt(animal, model)
+    image_paths = image(title, animal, stable_api, prompt)
+    image_path = image_paths[0]
+    data['image_path'] = image_path
+    print(image_path)
 
-    # Prepare styles
-    title_style = ParagraphStyle(
-        name="TitleStyle", fontName="Oswald-Bold", fontSize=36, alignment=1, spaceAfter=0.5, textTransform='uppercase', leading=38
-    )
-    subtitle_style = ParagraphStyle(
-        name="SubtitleStyle", fontName="Inter-Medium", fontSize=16, alignment=1, spaceAfter=0.1, leading=18
-    )
-    body_style = ParagraphStyle(
-        name="BodyStyle", fontName="Inter-Light", fontSize=11, alignment=4, spaceAfter=1, leading=13
-    )
+    tjson(data, title)
+    pdf(title, text, image_path)
+    html(title, text, image_path)
+    sync(manifesto_dir)
 
-    # Add image
-    image = RLImage(image_path, 250 * 4 / 3, 250 * 4 / 3)
-    image.Align = 'CENTER'
-
-    # Add title
-    title_paragraph = Paragraph(title, title_style)
-
-    # Split text into subtitle and body
-    subtitle, body = text.split('\n', 1)
-
-    # Add subtitle
-    subtitle_paragraph = Paragraph(subtitle, subtitle_style)
-
-    # Add body text
-    body = body.replace('\n', '<br/>')  # Replace newlines with HTML line breaks
-    body_paragraph = Paragraph(body, body_style)
-
-    # Build document
-    flowables = [image, Spacer(1, 12), title_paragraph, Spacer(1, 12), subtitle_paragraph, Spacer(1, 12), body_paragraph]
-    doc.build(flowables)
+    return title, text, image_path
