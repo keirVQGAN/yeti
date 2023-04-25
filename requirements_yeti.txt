@@ -10,3 +10,5 @@ fpdf
 jupyter-dash
 replicate
 scikit-learn
+pillow==8.2.0
+gradio
