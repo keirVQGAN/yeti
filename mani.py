@@ -381,3 +381,34 @@ def process_manifesto(role, question, keywordA, keywordB, keywordC, keywordD, mo
 
     return title, text, image_path, pdf_path
 
+def gr_process_manifesto(keywordA, keywordB, keywordC, keywordD, model, sample, characters):
+    roles = [
+        f"You are a highly creative writer with exceptional eloquence. Your mission is to craft an inspiring and transformative personal manifesto, limited to 250 words, that mirrors the style of the provided samples. Use vivid language and powerful emotions to create a memorable and thought-provoking piece.",
+        f"As a talented writer with a gift for powerful storytelling, your objective is to create an impactful personal manifesto, limited to 250 words, that reflects the style of the given samples. Weave together engaging language and strong feelings to develop a resonant and provocative work.",
+        f"You are an imaginative writer capable of crafting unforgettable prose. Your task is to write a compelling personal manifesto, limited to 250 words, that follows the style of the examples provided. Integrate expressive language and intense emotions to produce an influential and captivating piece."
+    ]
+
+    questions = [
+        "Compose a two-paragraph personal manifesto, limited to 250 words, inspired by the following excerpts: {manifestos_text}. Focus on redefining personal values and life goals through an intersectional lens, emphasizing mindfulness, self-improvement, and a connection with nature. Subtly weave in these elements: {keywordA}, {keywordB}, and {keywordC}; visualize {keywordA} within a {keywordB} landscape, underscoring the importance of {keywordC}. Write in an engaging, reflective, and persuasive style that mirrors the provided samples. Begin with a 5-word subtitle.",
+        "Craft a compelling two-paragraph personal manifesto, limited to 250 words, drawing inspiration from these excerpts: {manifestos_text}. Explore themes of personal growth, interconnectedness, and environmental awareness, while subtly incorporating {keywordA}, {keywordB}, and {keywordC}. Envision a world where {keywordA} thrives in a {keywordB} landscape, highlighting the value of {keywordC}. Write in a modern, introspective, and persuasive style that resembles the given examples. Start with a 5-word subtitle.",
+        "Create an evocative two-paragraph personal manifesto, limited to 250 words, influenced by these excerpts: {manifestos_text}. Delve into the themes of self-discovery, unity, and ecological consciousness, skillfully and subtly incorporating {keywordA}, {keywordB}, and {keywordC} into your narrative. Imagine a world where {keywordA} flourishes in a {keywordB} landscape, underlining the essence of {keywordC}. Write in a captivating, introspective, and convincing style that follows the style of the provided samples. Begin with a 5-word subtitle."
+    ]
+    stable_api = "X9BMj9TeT1TgCJElOM3PzootCWrBdg0oLEJUTBDDT7R3F1MvtEYIsGPgoTej"
+    role = random.choice(roles)
+    question = random.choice(questions)
+
+    title, text, image_path, pdf_path = process_manifesto(
+        role=role,
+        question=question,
+        keywordA=keywordA,
+        keywordB=keywordB,
+        keywordC=keywordC,
+        keywordD=keywordD,
+        model=model,
+        sample=sample,
+        characters=characters,
+        animal=keywordD,
+        stable_api=stable_api,
+    )
+
+    return title, text, image_path, pdf_path
