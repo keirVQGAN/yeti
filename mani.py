@@ -379,5 +379,5 @@ def process_manifesto(role, question, keywordA, keywordB, keywordC, keywordD, mo
     html_path = f"/content/drive/MyDrive/mani/out/manifestos/{title}/{title}.html"
     json_path = f"/content/drive/MyDrive/mani/out/manifestos/{title}/{title}_data.json"
 
-    return title, text, image_path, pdf_path, json_path
+    return title, text, image_path, pdf_path
 
