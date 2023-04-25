@@ -10,4 +10,3 @@ fpdf
 jupyter-dash
 replicate
 scikit-learn
-gradio
