@@ -1,0 +1,6 @@
+rich[jupyter]
+langchain
+openai
+requests
+reportlab
+tiktoken
